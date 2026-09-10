@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenbao - Rollos Naturales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@0,600;0,700;1,400&family=Montserrat:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #000000;
+            background-image: url('img/FondoPagina.png');
+            background-size: 100% auto;          
+            background-position: top center;     
+            background-repeat: repeat-y;     
+            background-attachment: scroll;      
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-size: contain; 
+                background-position: top center;
+            }
+        }  
+
+        .menu-header {
+            width: 100%;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .back-btn {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .header-logo { height: 55px; object-fit: contain; }
+        .header-placeholder { width: 38px; }
+
+        .category-header { text-align: center; padding: 30px 15px 20px 15px; }
+        .category-title { font-family: 'Cinzel', serif; font-size: 2.2rem; letter-spacing: 3px; text-transform: uppercase; }
+        .category-subtitle { font-family: 'Cinzel', serif; font-style: italic; font-size: 0.95rem; color: #d63031; margin-top: 4px; }
+        .title-line { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #d63031, transparent); margin: 12px auto 0 auto; }
+
+        .dishes-container { max-width: 680px; margin: 0 auto; padding: 0 16px; display: flex; flex-direction: column; gap: 35px; }
+
+        .dish-card {
+            display: flex; flex-direction: column; gap: 12px;
+            background: rgba(18, 18, 18, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px; padding: 16px;
+            backdrop-filter: blur(5px);
+        }
+        .dish-header { 
+            display: flex; 
+            align-items: baseline; 
+            justify-content: space-between; 
+            gap: 6px; 
+            cursor: pointer; 
+        }
+        .dish-title-group {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .dish-name { 
+            font-family: 'Cinzel', serif; 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            color: #ffffff; 
+            text-transform: uppercase; 
+        }
+        .view-photo-tag { 
+            font-size: 0.75rem; 
+            color: #d63031; 
+            font-weight: 600; 
+        }
+        .dish-dots { 
+            flex-grow: 1; 
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.25); 
+            margin: 0 4px; 
+            position: relative; 
+            top: -4px; 
+        }
+        .dish-price { 
+            font-family: 'Cinzel', serif; 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            color: #ffd700; 
+            white-space: nowrap;
+        }
+
+        .dish-description { font-size: 0.88rem; line-height: 1.5; color: #cccccc; font-weight: 300; }
+
+        .dish-image-wrapper {
+            position: relative; width: 100%; height: 280px;
+            border-radius: 10px; overflow: hidden; margin-top: 8px;
+            cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .dish-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px); justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-content-wrapper { position: relative; max-width: 90%; max-height: 80vh; text-align: center; }
+        .modal-img { max-width: 100%; max-height: 70vh; border-radius: 10px; object-fit: contain; }
+        .modal-caption { margin-top: 15px; font-family: 'Cinzel', serif; font-size: 1.3rem; }
+        .modal-close { position: absolute; top: -40px; right: 0; color: #ffffff; font-size: 2rem; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            body { background-size: contain; background-position: top center; background-attachment: scroll; }
+            .dish-image-wrapper { height: 220px; }
+            .dish-name { font-size: 1.1rem; }
+            .dish-price { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="menu-header">
+        <a href="menu.html" class="back-btn" title="Volver al menú">‹</a>
+        <a href="menu.html"><img src="img/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo"></a>
+        <div class="header-placeholder"></div>
+    </header>
+    
+    <section class="category-header">
+        <h1 class="category-title">Naturales</h1>
+        <p class="category-subtitle">Rollos Frescos Tradicionales</p>
+        <div class="title-line"></div>
+    </section>
+
+    <main class="dishes-container">
+
+        <!-- GUAMUCHILITO -->
+        <article class="dish-card">
+            <div class="dish-header" onclick="openModal('img/clasicos/Guamuchilito.png', 'Guamuchilito')">
+                <div class="dish-title-group">
+                    <h2 class="dish-name">Guamuchilito</h2>
+                    <span class="view-photo-tag">(Foto)</span>
+                </div>
+                <div class="dish-dots"></div>
+                <span class="dish-price">$145.00</span>
+            </div>
+            <p class="dish-description">
+                250grs de arroz, pepino, aguacate y queso Philadelphia. Por fuera surimi fresco, bañado en aderezo chipotle de la casa y un toque de ajonjolí tostado.
+            </p>
+            <div class="dish-image-wrapper" onclick="openModal('img/clasicos/Guamuchilito.png', 'Guamuchilito')">
+                <img src="img/clasicos/Guamuchilito.png" alt="Guamuchilito" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800'">
+            </div>
+        </article>
+
+        <!-- ZENBAO ROLL -->
+        <article class="dish-card">
+            <div class="dish-header" onclick="openModal('img/clasicos/Zenbao Roll.png', 'Zenbao Roll')">
+                <div class="dish-title-group">
+                    <h2 class="dish-name">Zenbao Roll</h2>
+                    <span class="view-photo-tag">(Foto)</span>
+                </div>
+                <div class="dish-dots"></div>
+                <span class="dish-price">$165.00</span>
+            </div>
+            <p class="dish-description">
+                250grs de arroz, pepino, aguacate y queso Philadelphia. Por fuera envuelto en láminas de aguacate y camarón fresco, coronado con topping spicy de la casa y salsa de anguila.
+            </p>
+            <div class="dish-image-wrapper" onclick="openModal('img/clasicos/Zenbao Roll.png', 'Zenbao Roll')">
+                <img src="img/clasicos/Zenbao Roll.png" alt="Zenbao Roll" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=800'">
+            </div>
+        </article>
+
+    </main>
+
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImg" class="modal-img" src="" alt="Vista previa">
+            <div id="modalCaption" class="modal-caption"></div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(imageSrc, title) {
+            document.getElementById('modalImg').src = imageSrc;
+            document.getElementById('modalCaption').textContent = title;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+    </script>
+</body>
+</html>

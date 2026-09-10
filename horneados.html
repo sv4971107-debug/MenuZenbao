@@ -10,6 +10,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@0,600;0,700;1,400&family=Montserrat:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
     
     <style>
+        body {
+            background-color: #000000;
+            background-image: url('img/FondoPagina.png');
+            background-size: 100% auto;          
+            background-position: top center;     
+            background-repeat: repeat-y;     
+            background-attachment: scroll;      
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                background-size: contain; 
+                background-position: top center;
+            }
+        }  
+
         /* ==========================================
            RESET Y ESTILOS BASE
            ========================================== */
@@ -338,7 +358,7 @@
     <!-- ENCABEZADO FIJO -->
     <header class="menu-header">
         <a href="menu.html" class="back-btn" title="Volver al menú">‹</a>
-        <img src="img/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo">
+        <a href="menu.html"><img src="img/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo"></a>
         <div class="header-placeholder"></div>
     </header>
 

@@ -10,6 +10,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
+       body {
+            background-color: #000000;
+            background-image: url('img/FondoPagina.png');
+            background-size: 100% auto;          
+            background-position: top center;     
+            background-repeat: repeat-y;     
+            background-attachment: scroll;      
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                background-size: contain; 
+                background-position: top center;
+            }
+        }  
+
         /* RESET GENERAL */
         * {
             margin: 0;
@@ -260,7 +280,7 @@
         </a>
 
         <!-- 6. BONELESS Y ALITAS -->
-        <a href="boneless-alitas.html" class="category-card" style="background-image: url('https://images.unsplash.com/photo-1567620832903-9fc6debc209f?q=80&w=800');">
+        <a href="boneless.html" class="category-card" style="background-image: url('https://images.unsplash.com/photo-1567620832903-9fc6debc209f?q=80&w=800');">
             <div class="card-overlay"></div>
             <div class="card-content">
                 <h3 class="category-name">Boneless y Alitas</h3>
