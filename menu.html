@@ -10,26 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-       body {
-            background-color: #000000;
-            background-image: url('img/FondoPagina.png');
-            background-size: 100% auto;          
-            background-position: top center;     
-            background-repeat: repeat-y;     
-            background-attachment: scroll;      
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-        }
-
-
-        @media (max-width: 768px) {
-            body {
-                background-size: contain; 
-                background-position: top center;
-            }
-        }  
-
         /* RESET GENERAL */
         * {
             margin: 0;
@@ -39,6 +19,11 @@
 
         body {
             background-color: #000000;
+            background-image: url('img/FondoPagina.png');
+            background-size: 100% auto;          
+            background-position: top center;     
+            background-repeat: repeat-y;     
+            background-attachment: scroll;      
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
@@ -46,33 +31,38 @@
             overflow-y: auto;
         }
 
-    /* HEADER FIJO CON BARRA GRISÁCEA AL HACER SCROLL */
+        @media (max-width: 768px) {
+            body {
+                background-size: contain; 
+                background-position: top center;
+            }
+        }  
+
+        /* HEADER FIJO MÁS DELGADO Y ELEGANTE */
         .menu-header {
             width: 100%;
-            padding: 12px 0 10px 0; /* Un poco menos de espacio arriba/abajo para ajustar */
+            padding: 4px 0; /* Padding mínimo para reducir la barra al máximo */
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Tono gris oscuro translúcido */
             background-color: rgba(20, 20, 20, 0.92);
-            backdrop-filter: blur(8px); /* Difumina lo que pasa por detrás */
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             position: sticky;
             top: 0;
             z-index: 100;
-            /* Línea gris de separación clara */
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
         .header-logo {
-            height: 60px; /* Tamaño mediano (puedes probar entre 55px y 65px si quieres ajustarlo) */
+            height: 32px; /* Reducido a la mitad para evitar que se vea tosco */
             width: auto;
             max-width: 90vw;
             object-fit: contain;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2)) 
                     drop-shadow(0 0 20px rgba(220, 20, 60, 0.3));
-            transition: height 0.3s ease; /* Transición suave si cambias de tamaño */
+            transition: height 0.3s ease;
         }
 
         /* TÍTULO DE SECCIÓN */
@@ -161,11 +151,8 @@
             background: linear-gradient(180deg, #ffffff 0%, #dcdcdc 60%, #b0b0b0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            
-            /* Sombra neón suavizada (menos estridente) */
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9))
                     drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
-            
             transition: filter 0.3s ease;
         }
 
@@ -207,7 +194,7 @@
         /* MÓVILES */
         @media (max-width: 480px) {
             .header-logo {
-                height: 85px;
+                height: 38px; /* Ajustado para que no se ensanche la barra en celulares */
             }
             .category-card {
                 height: 125px;
@@ -223,7 +210,7 @@
 </head>
 <body>
 
-    <!-- ENCABEZADO CON LOGO Y BARRA GRISÁCEA FIJA -->
+    <!-- ENCABEZADO CON LOGO Y BARRA FIJA SLIM -->
     <header class="menu-header">
         <a href="index.html">
             <img src="img/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo">
