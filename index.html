@@ -10,6 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
+        /* RESET GENERAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background-color: #000000;
             background-image: url('img/FondoPagina.png');
@@ -20,8 +27,12 @@
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: pointer; /* Indica visualmente que toda la pantalla es cliqueable */
         }
-
 
         @media (max-width: 768px) {
             body {
@@ -29,24 +40,6 @@
                 background-position: top center;
             }
         }       
-
-        /* RESET GENERAL */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
 
         /* CONTENEDOR PRINCIPAL */
         .welcome-container {
@@ -69,10 +62,10 @@
             animation: fadeInBlur 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        /* LOGO SIN LUZ TRASERA Y CON MÁS ESPACIO INFERIOR */
+        /* LOGO */
         .logo-box {
             position: relative;
-            margin-bottom: 50px; /* Mayor separación entre el logo y el botón */
+            margin-bottom: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -86,30 +79,39 @@
             object-fit: contain;
         }
 
-        /* BOTÓN DE MENÚ */
+        /* BOTÓN DE MENÚ (TEXTO PURO SIN CÁPSULA NI BORDE ROJO) */
         .btn-menu {
             position: relative;
             z-index: 2;
             display: inline-block;
-            padding: 14px 42px;
-            border: 1.5px solid #ffffff;
-            border-radius: 8px;
-            background-color: transparent;
+            padding: 10px 20px;
+            border: none;
+            background: transparent; /* Sin fondo negro */
             color: #ffffff;
-            font-size: 1rem;
-            font-weight: 400;
+            font-family: 'Cinzel', serif;
+            font-size: 1.65rem;
+            font-weight: 700;
             text-decoration: none;
-            letter-spacing: 1.5px;
-            transition: all 0.3s ease;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
             cursor: pointer;
+            
+            /* LUZ LED DIRECTAMENTE EN LAS LETRAS DEL TEXTO */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                         0 0 20px rgba(214, 48, 49, 0.8),
+                         0 0 35px rgba(214, 48, 49, 0.6);
         }
 
+        /* EFECTO HOVER */
         .btn-menu:hover {
-            background-color: #d63031;
-            border-color: #d63031;
             color: #ffffff;
-            box-shadow: 0 0 20px rgba(214, 48, 49, 0.6);
-            transform: translateY(-2px);
+            transform: scale(1.08);
+            /* Intensificación de luz neón en las letras al pasar el cursor */
+            text-shadow: 0 0 12px #ffffff,
+                         0 0 25px #d63031,
+                         0 0 45px #d63031,
+                         0 0 60px #d63031;
         }
 
         /* ANIMACIÓN DE ENTRADA */
@@ -132,7 +134,10 @@
                 width: 210px;
             }
             .logo-box {
-                margin-bottom: 45px; /* Separación ajustada para pantallas pequeñas */
+                margin-bottom: 25px;
+            }
+            .btn-menu {
+                font-size: 1.35rem;
             }
         }
     </style>
@@ -146,10 +151,17 @@
                 <img src="img/LogoZenbaoB.png" alt="Zenbao Logo" class="logo-img">
             </div>
 
-            <a href="menu.html" class="btn-menu">Ver Menú</a>
+            <a href="menu.html" class="btn-menu">Menú</a>
 
         </div>
     </main>
+
+    <script>
+        // Permite que al hacer clic en cualquier parte de la pantalla redirija a menu.html
+        document.body.addEventListener('click', function() {
+            window.location.href = 'menu.html';
+        });
+    </script>
 
 </body>
 </html>
