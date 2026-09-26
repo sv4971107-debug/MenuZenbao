@@ -12,7 +12,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: #000000;
-            background-image: url('img/FondoPagina.png');
+            background-image: url('img/categorias/FondoPagina.jpg');
             background-size: 100% auto;          
             background-position: top center;     
             background-repeat: repeat-y;     
@@ -113,12 +113,12 @@
 
         .dish-description { font-size: 0.88rem; line-height: 1.5; color: #cccccc; font-weight: 300; }
 
-            .dish-image-wrapper {
+        .dish-image-wrapper {
             position: relative; 
             width: 100%; 
             max-width: 440px;          
             aspect-ratio: 4 / 3;
-            flex-shrink: 0; /* <-- Asegúrate de agregar esta línea */
+            flex-shrink: 0;
             border-radius: 10px; 
             overflow: hidden; 
             margin: 10px auto 0 auto;
@@ -128,7 +128,7 @@
         }
 
         .dish-img { 
-            display: block; /* <-- Asegúrate de agregar esta línea */
+            display: block;
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
@@ -139,6 +139,7 @@
         .dish-image-wrapper:hover .dish-img {
             transform: scale(1.03);
         }
+
         /* MODAL VISTA PREVIA */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0;
@@ -161,7 +162,7 @@
 
     <header class="menu-header">
         <a href="menu.html" class="back-btn" title="Volver al menú">‹</a>
-        <a href="menu.html"><img src="img/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo"></a>
+        <a href="menu.html"><img src="img/categorias/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo"></a>
         <div class="header-placeholder"></div>
     </header>
 
@@ -175,7 +176,7 @@
 
         <!-- CHEESE CHIPOTLE -->
         <article class="dish-card">
-            <div class="dish-header" onclick="openModal('img/especialidades/Cheese Chipotle.png', 'Cheese Chipotle')">
+            <div class="dish-header" onclick="openModal('img/especialidades/Cheese Chipotle (1).jpg', 'Cheese Chipotle')">
                 <div class="dish-title-group">
                     <h2 class="dish-name">Cheese Chipotle</h2>
                     <span class="view-photo-tag">(Foto)</span>
@@ -184,16 +185,16 @@
                 <span class="dish-price">$189.00</span>
             </div>
             <p class="dish-description">
-                250grs de arroz, aguacate, queso Philadelphia y camarón empanizado. Bañado en cremosa salsa de queso chipotle de la casa y toque de cebollín.
+                250grs de arroz, aguacate, queso Philadelphia, camarón empanizado y tocino. Bañado en cremosa salsa de queso chipotle de la casa y toque de cebollín.
             </p>
-            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Cheese Chipotle.png', 'Cheese Chipotle')">
-                <img src="img/especialidades/Cheese Chipotle.png" alt="Cheese Chipotle" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800'">
+            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Cheese Chipotle (1).jpg', 'Cheese Chipotle')">
+                <img src="img/especialidades/Cheese Chipotle (1).jpg" alt="Cheese Chipotle" class="dish-img">
             </div>
         </article>
 
         <!-- BEEF ROLL -->
         <article class="dish-card">
-            <div class="dish-header" onclick="openModal('img/especialidades/Beef Roll.png', 'Beef Phila Spicy')">
+            <div class="dish-header" onclick="openModal('img/especialidades/Beef Roll (1).jpg', 'Beef Roll')">
                 <div class="dish-title-group">
                     <h2 class="dish-name">Beef Roll</h2>
                     <span class="view-photo-tag">(Foto)</span>
@@ -204,14 +205,14 @@
             <p class="dish-description">
                 250grs de arroz, aguacate, queso Philadelphia y filete de res sazonado al sartén. Empanizado crujiente y bañado en aderezo de la casa.
             </p>
-            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Beef Roll.png', 'Beef Phila Spicy')">
-                <img src="img/especialidades/Beef Roll.png" alt="Beef Roll" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=800'">
+            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Beef Roll (1).jpg', 'Beef Roll')">
+                <img src="img/especialidades/Beef Roll (1).jpg" alt="Beef Roll" class="dish-img">
             </div>
         </article>
 
-          <!-- Mouyou -->
+        <!-- MOUYOU -->
         <article class="dish-card">
-            <div class="dish-header" onclick="openModal('img/especialidades/Mouyou.png', 'Mouyou')">
+            <div class="dish-header" onclick="openModal('img/especialidades/Mouyou (1).jpg', 'Mouyou')">
                 <div class="dish-title-group">
                     <h2 class="dish-name">Mouyou</h2>
                     <span class="view-photo-tag">(Foto)</span>
@@ -222,14 +223,14 @@
             <p class="dish-description">
                 250grs de arroz, philadelphia, aguacate, res, pepino y surimi. Por fuera philadelphia, surimi, tempura bañado en anguila spicy y cebollin.
             </p>
-            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Mouyou.png', 'Mouyou')">
-                <img src="img/especialidades/Mouyou.png" alt="Cheese Chipotle" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800'">
+            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Mouyou (1).jpg', 'Mouyou')">
+                <img src="img/especialidades/Mouyou (1).jpg" alt="Mouyou" class="dish-img">
             </div>
         </article>
 
-        <!-- Inda Roll -->
+        <!-- INDA ROLL -->
         <article class="dish-card">
-            <div class="dish-header" onclick="openModal('img/especialidades/Inda Roll.png', 'Inda Roll')">
+            <div class="dish-header" onclick="openModal('img/especialidades/Inda Roll (1).jpg', 'Inda Roll')">
                 <div class="dish-title-group">
                     <h2 class="dish-name">Inda Roll</h2>
                     <span class="view-photo-tag">(Foto)</span>
@@ -240,14 +241,14 @@
             <p class="dish-description">
                 250grs de arroz, aguacate, queso philadelphia, res y camarón empanizado. Coronado de Tampico, salsa anguila y chipotle.
             </p>
-            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Inda Roll.png', 'Mouyou')">
-                <img src="img/especialidades/Inda Roll.png" alt="Cheese Chipotle" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=800'">
+            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Inda Roll (1).jpg', 'Inda Roll')">
+                <img src="img/especialidades/Inda Roll (1).jpg" alt="Inda Roll" class="dish-img">
             </div>
         </article>
 
-         <!-- BAO ROLL -->
+        <!-- BAO ROLL -->
         <article class="dish-card">
-            <div class="dish-header" onclick="openModal('img/especialidades/Bao Roll.png', 'Bao Roll')">
+            <div class="dish-header" onclick="openModal('img/especialidades/Bao Roll (1).jpg', 'Bao Roll')">
                 <div class="dish-title-group">
                     <h2 class="dish-name">Bao Roll</h2>
                     <span class="view-photo-tag">(Foto)</span>
@@ -256,16 +257,16 @@
                 <span class="dish-price">$219.00</span>
             </div>
             <p class="dish-description">
-                250grs de arroz, aguacate, queso Philadelphia, res y camarón. Por fuera gratinado con queso americano, Chester y Philadelphia. Coronado con topping de camarón empanizado, aderezo chipotle y cambray. Bañado en salsa de anguila y cebollín.
+                250grs de arroz, aguacate, queso philadelphia, res y camarón. Por fuera gratinado con queso americano, Chester y Philadelphia. Coronado con topping de camarón empanizado, aderezo chipotle y cambray. Bañado en salsa de anguila y cebollín.
             </p>
-            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Bao Roll.png', 'Bao Roll')">
-                <img src="img/especialidades/Bao Roll.png" alt="Bao Roll" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=800'">
+            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Bao Roll (1).jpg', 'Bao Roll')">
+                <img src="img/especialidades/Bao Roll (1).jpg" alt="Bao Roll" class="dish-img">
             </div>
         </article>
 
         <!-- ZEN ESPECIAL -->
         <article class="dish-card">
-            <div class="dish-header" onclick="openModal('img/especialidades/Zen Especial.png', 'Zen Especial')">
+            <div class="dish-header" onclick="openModal('img/especialidades/Zen Especial (1).jpg', 'Zen Especial')">
                 <div class="dish-title-group">
                     <h2 class="dish-name">Zen Especial</h2>
                     <span class="view-photo-tag">(Foto)</span>
@@ -274,10 +275,10 @@
                 <span class="dish-price">$219.00</span>
             </div>
             <p class="dish-description">
-                250grs de arroz, aguacate, queso Philadelphia, pollo, res y tocino. Gratinado con mezcla de tres quesos, coronado con camarón tempura y un toque especial de aderezo dulce y salsa anguila.
+                250grs de arroz, aguacate, queso philadelphia, tocino y camarones empanizados. Gratinado con queso chester, philadelphia, aderezo chipotle, sriracha y res, Coronado con topping de tampico bañado en salsa anguila.
             </p>
-            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Zen Especial.png', 'Zen Especial')">
-                <img src="img/especialidades/Zen Especial.png" alt="Zen Especial" class="dish-img" onerror="this.src='https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=800'">
+            <div class="dish-image-wrapper" onclick="openModal('img/especialidades/Zen Especial (1).jpg', 'Zen Especial')">
+                <img src="img/especialidades/Zen Especial (1).jpg" alt="Zen Especial" class="dish-img">
             </div>
         </article>
 
