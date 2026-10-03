@@ -30,7 +30,7 @@
         }  
         .menu-header {
             width: 100%;
-            padding: 12px 20px;
+            padding: 4px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -40,22 +40,29 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transition: transform 0.3s ease;
+        }
+        .menu-header.header-hidden {
+            transform: translateY(-100%);
         }
         .back-btn {
             color: #ffffff;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 38px; height: 38px;
+            width: 30px; height: 30px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
         }
-        .header-logo { height: 55px; object-fit: contain; }
-        .header-placeholder { width: 38px; }
+        .back-btn:hover { background: rgba(214, 48, 49, 0.6); }
+        .header-logo { height: 32px; object-fit: contain; }
+        .header-placeholder { width: 30px; }
 
-        .category-header { text-align: center; padding: 30px 15px 20px 15px; }
+        .category-header { text-align: center; padding: 25px 15px 15px 15px; }
         .category-title { font-family: 'Cinzel', serif; font-size: 2.2rem; letter-spacing: 3px; text-transform: uppercase; }
         .category-subtitle { font-family: 'Cinzel', serif; font-style: italic; font-size: 0.95rem; color: #d63031; margin-top: 4px; }
         .title-line { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #d63031, transparent); margin: 12px auto 0 auto; }
@@ -140,6 +147,7 @@
 
         @media (max-width: 768px) {
             body { background-size: contain; background-position: top center; background-attachment: scroll; }
+            .header-logo { height: 32px; }
         }
     </style>
 </head>
@@ -162,22 +170,14 @@
         <!-- REFRESCOS Y BÁSICOS -->
         <div class="section-box">
             <h2 class="section-title">Refrescos & Tradicionales</h2>
-            <div class="price-list">
+            <div class="price-list" id="refrescosPriceList">
                 <div class="price-item">
                     <div class="item-info">
                         <span>Coca-Cola / Sabores</span>
-                        <span class="item-desc">Refresco 600ml</span>
+                        <span class="item-desc">Lata o botella 355ml</span>
                     </div>
                     <div class="dots"></div>
                     <span class="price-val">$30.00</span>
-                </div>
-               <div class="price-item">
-                    <div class="item-info">
-                        <span>Limonada</span>
-                        <span class="item-desc">Limonada de 1l</span>
-                    </div>
-                    <div class="dots"></div>
-                    <span class="price-val">$40.00</span>
                 </div>
                 <div class="price-item">
                     <div class="item-info">
@@ -193,7 +193,7 @@
                         <span class="item-desc">Purificada 500ml</span>
                     </div>
                     <div class="dots"></div>
-                    <span class="price-val">$15.00</span>
+                    <span class="price-val">$20.00</span>
                 </div>
             </div>
         </div>
@@ -201,11 +201,11 @@
         <!-- AGUAS PREPARADAS Y JARRAS -->
         <div class="section-box">
             <h2 class="section-title">Aguas Frescas & Jarras</h2>
-            <div class="price-list">
+            <div class="price-list" id="jarrasPriceList">
                 <div class="price-item">
                     <div class="item-info">
                         <span>Jarra de Limón Natural</span>
-                        <span class="item-desc">2 Litro - Preparada al momento</span>
+                        <span class="item-desc">2 Litros - Preparada al momento</span>
                     </div>
                     <div class="dots"></div>
                     <span class="price-val">$90.00</span>
@@ -213,7 +213,7 @@
                 <div class="price-item">
                     <div class="item-info">
                         <span>Jarra Té de la Casa</span>
-                        <span class="item-desc">2 Litro - Té helado especial</span>
+                        <span class="item-desc">2 Litros - Té helado especial</span>
                     </div>
                     <div class="dots"></div>
                     <span class="price-val">$90.00</span>
@@ -221,10 +221,49 @@
             </div>
         </div>
 
-        <!-- BARRA Y COCTELERÍA -->
-        
-
     </main>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/zenbao-config.js"></script>
+    <script src="js/zenbao-store.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ZenbaoStore.subscribeData(function(data) {
+                const products = (data.products && data.products.bebidas) || [];
+                const refrescosList = document.getElementById('refrescosPriceList');
+                const jarrasList = document.getElementById('jarrasPriceList');
+
+                const refrescosItems = products.filter(p => p.subSection === 'refrescos' || (!p.subSection && !p.name.toLowerCase().includes('jarra')));
+                const jarrasItems = products.filter(p => p.subSection === 'jarras' || (!p.subSection && p.name.toLowerCase().includes('jarra')));
+
+                if (refrescosList && refrescosItems.length > 0) {
+                    refrescosList.innerHTML = refrescosItems.map(p => `
+                        <div class="price-item">
+                            <div class="item-info">
+                                <span>${p.name}</span>
+                                ${p.description ? `<span class="item-desc">${p.description}</span>` : ''}
+                            </div>
+                            <div class="dots"></div>
+                            <span class="price-val">${p.price}</span>
+                        </div>
+                    `).join('');
+                }
+
+                if (jarrasList && jarrasItems.length > 0) {
+                    jarrasList.innerHTML = jarrasItems.map(p => `
+                        <div class="price-item">
+                            <div class="item-info">
+                                <span>${p.name}</span>
+                                ${p.description ? `<span class="item-desc">${p.description}</span>` : ''}
+                            </div>
+                            <div class="dots"></div>
+                            <span class="price-val">${p.price}</span>
+                        </div>
+                    `).join('');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

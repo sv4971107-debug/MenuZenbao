@@ -33,7 +33,7 @@
 
         .menu-header {
             width: 100%;
-            padding: 12px 20px;
+            padding: 4px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,22 +43,29 @@
             top: 0;
             z-index: 100;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transition: transform 0.3s ease;
+        }
+        .menu-header.header-hidden {
+            transform: translateY(-100%);
         }
         .back-btn {
             color: #ffffff;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 38px; height: 38px;
+            width: 30px; height: 30px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
         }
-        .header-logo { height: 55px; object-fit: contain; }
-        .header-placeholder { width: 38px; }
+        .back-btn:hover { background: rgba(214, 48, 49, 0.6); }
+        .header-logo { height: 32px; object-fit: contain; }
+        .header-placeholder { width: 30px; }
 
-        .category-header { text-align: center; padding: 30px 15px 20px 15px; }
+        .category-header { text-align: center; padding: 25px 15px 15px 15px; }
         .category-title {
             font-family: 'Cinzel', serif;
             font-size: 2.2rem;
@@ -206,6 +213,7 @@
 
         @media (max-width: 768px) {
             body { background-size: contain; background-position: top center; background-attachment: scroll; }
+            .header-logo { height: 32px; }
         }
     </style>
 </head>
@@ -229,7 +237,7 @@
         <div class="section-box">
             <h2 class="section-title">Boneless</h2>
             <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 12px;">Crujientes, jugosos e irresistibles. (Incluye papas)</p>
-            <div class="price-list">
+            <div class="price-list" id="bonelessPriceList">
                 <div class="price-item">
                     <span>8 Piezas (300g)</span>
                     <div class="dots"></div>
@@ -260,7 +268,7 @@
         <!-- SALSAS -->
         <div class="section-box">
             <h2 class="section-title">Salsas (Elige tu favorita)</h2>
-            <div class="sauce-grid">
+            <div class="sauce-grid" id="saucesGrid">
                 <div class="sauce-card">
                     <div class="sauce-name">BBQ</div>
                     <div class="sauce-desc">Dulce y ahumada</div>
@@ -280,7 +288,7 @@
         <div class="section-box">
             <h2 class="section-title">Papas Fritas</h2>
             <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 12px;">Crujientes por fuera, suaves por dentro.</p>
-            <div class="price-list">
+            <div class="price-list" id="papasPriceList">
                 <div class="price-item">
                     <span>1/2 Orden (150g)</span>
                     <div class="dots"></div>
@@ -309,7 +317,53 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/zenbao-config.js"></script>
+    <script src="js/zenbao-store.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ZenbaoStore.subscribeData(function(data) {
+                const products = (data.products && data.products.boneless) || [];
+                const bonelessList = document.getElementById('bonelessPriceList');
+                const saucesGrid = document.getElementById('saucesGrid');
+                const papasList = document.getElementById('papasPriceList');
+
+                const bonelessItems = products.filter(p => p.subSection === 'boneless' || (!p.subSection && !p.name.toLowerCase().includes('papas') && p.subSection !== 'sauce'));
+                const sauceItems = products.filter(p => p.subSection === 'sauce');
+                const papasItems = products.filter(p => p.subSection === 'papas' || (!p.subSection && p.name.toLowerCase().includes('papas')));
+
+                if (bonelessList && bonelessItems.length > 0) {
+                    bonelessList.innerHTML = bonelessItems.map(p => `
+                        <div class="price-item">
+                            <span>${p.name}</span>
+                            <div class="dots"></div>
+                            <span class="price-val">${p.price}</span>
+                        </div>
+                    `).join('');
+                }
+
+                if (saucesGrid && sauceItems.length > 0) {
+                    saucesGrid.innerHTML = sauceItems.map(p => `
+                        <div class="sauce-card">
+                            <div class="sauce-name">${p.name}</div>
+                            <div class="sauce-desc">${p.description || ''}</div>
+                        </div>
+                    `).join('');
+                }
+
+                if (papasList && papasItems.length > 0) {
+                    papasList.innerHTML = papasItems.map(p => `
+                        <div class="price-item">
+                            <span>${p.name}</span>
+                            <div class="dots"></div>
+                            <span class="price-val">${p.price}</span>
+                        </div>
+                    `).join('');
+                }
+            });
+        });
+
         function openModal(imageSrc, title) {
             document.getElementById('modalImg').src = imageSrc;
             document.getElementById('modalCaption').textContent = title;

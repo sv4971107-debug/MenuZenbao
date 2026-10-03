@@ -38,10 +38,10 @@
             }
         }  
 
-        /* HEADER FIJO MÁS DELGADO Y ELEGANTE */
+        /* HEADER FIJO SLIM */
         .menu-header {
             width: 100%;
-            padding: 4px 0; /* Padding mínimo para reducir la barra al máximo */
+            padding: 4px 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -53,10 +53,15 @@
             z-index: 100;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-header.header-hidden {
+            transform: translateY(-100%);
         }
 
         .header-logo {
-            height: 32px; /* Reducido a la mitad para evitar que se vea tosco */
+            height: 32px;
             width: auto;
             max-width: 90vw;
             object-fit: contain;
@@ -194,7 +199,7 @@
         /* MÓVILES */
         @media (max-width: 480px) {
             .header-logo {
-                height: 38px; /* Ajustado para que no se ensanche la barra en celulares */
+                height: 32px;
             }
             .category-card {
                 height: 125px;
@@ -218,71 +223,45 @@
     </header>
 
     <div class="section-title-container">
-        <h2 class="section-title"></h2>
+        <h2 class="section-title">Nuestra Carta</h2>
         <div class="title-underline"></div>
     </div>
 
-    <!-- TARJETAS DE CATEGORÍAS -->
-    <main class="categories-container">
-
-        <!-- 1. ESPECIALIDADES (DORADA) -->
-        <a href="especialidades.html" class="category-card card-specialty" style="background-image: url('img/categorias/especialidades.jpg');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <span class="specialty-badge">★ Lo Mejor de Zenbao</span>
-                <h3 class="category-name">Especialidades</h3>
-            </div>
-        </a>
-
-        <!-- 2. ENTRADAS -->
-        <a href="entradas.html" class="category-card" style="background-image: url('img/categorias/entradas.jpg');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <h3 class="category-name">Entradas</h3>
-            </div>
-        </a>
-
-        <!-- 3. CLÁSICOS -->
-        <a href="clasicos.html" class="category-card" style="background-image: url('img/categorias/Clasicos.jpg');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <h3 class="category-name">Clásicos</h3>
-            </div>
-        </a>
-
-        <!-- 4. NATURALES -->
-        <a href="naturales.html" class="category-card" style="background-image: url('img/categorias/Natural.jpg');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <h3 class="category-name">Naturales</h3>
-            </div>
-        </a>
-
-        <!-- 5. HORNEADOS -->
-        <a href="horneados.html" class="category-card" style="background-image: url('img/categorias/Horno.jpg');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <h3 class="category-name">Horneados</h3>
-            </div>
-        </a>
-
-        <!-- 6. BONELESS Y ALITAS -->
-        <a href="boneless.html" class="category-card" style="background-image: url('img/categorias/bonelescate.jpg');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <h3 class="category-name">Boneless y Alitas</h3>
-            </div>
-        </a>
-
-        <!-- 7. BEBIDAS -->
-        <a href="bebidas.html" class="category-card" style="background-image: url('https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=800');">
-            <div class="card-overlay"></div>
-            <div class="card-content">
-                <h3 class="category-name">Bebidas</h3>
-            </div>
-        </a>
-
+    <!-- TARJETAS DE CATEGORÍAS (RENDERIZADO DINÁMICO) -->
+    <main class="categories-container" id="categoriesContainer">
+        <!-- Renderizado dinámicamente con zenbao-store.js -->
     </main>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/zenbao-config.js"></script>
+    <script src="js/zenbao-store.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('categoriesContainer');
+
+            ZenbaoStore.subscribeData(function(data) {
+                const categories = data.categories || [];
+                container.innerHTML = '';
+
+                categories.forEach(cat => {
+                    const isSpecial = cat.isSpecial || cat.id === 'especialidades';
+                    const card = document.createElement('a');
+                    card.href = cat.href || (cat.id + '.html');
+                    card.className = `category-card ${isSpecial ? 'card-specialty' : ''}`;
+                    card.style.backgroundImage = `url('${cat.image || "img/categorias/LogoZenbaoB.png"}')`;
+
+                    card.innerHTML = `
+                        <div class="card-overlay"></div>
+                        <div class="card-content">
+                            ${isSpecial ? `<span class="specialty-badge">${cat.subtitle || '★ Lo Mejor de Zenbao'}</span>` : ''}
+                            <h3 class="category-name">${cat.name}</h3>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
