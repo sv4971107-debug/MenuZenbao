@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenbao - Bebidas & Barra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@0,600;0,700;1,400&family=Montserrat:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+    
+    <style>
+       body {
+            background-color: #000000;
+            background-image: url('img/categorias/FondoPagina.jpg');
+            background-size: 100% auto;          
+            background-position: top center;     
+            background-repeat: repeat-y;     
+            background-attachment: scroll;      
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                background-size: contain; 
+                background-position: top center;
+            }
+        }  
+        .menu-header {
+            width: 100%;
+            padding: 4px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            transition: transform 0.3s ease;
+        }
+        .menu-header.header-hidden {
+            transform: translateY(-100%);
+        }
+        .back-btn {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
+        }
+        .back-btn:hover { background: rgba(214, 48, 49, 0.6); }
+        .header-logo { height: 32px; object-fit: contain; }
+        .header-placeholder { width: 30px; }
+
+        .category-header { text-align: center; padding: 25px 15px 15px 15px; }
+        .category-title { font-family: 'Cinzel', serif; font-size: 2.2rem; letter-spacing: 3px; text-transform: uppercase; }
+        .category-subtitle { font-family: 'Cinzel', serif; font-style: italic; font-size: 0.95rem; color: #d63031; margin-top: 4px; }
+        .title-line { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, #d63031, transparent); margin: 12px auto 0 auto; }
+
+        .dishes-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .section-box {
+            background: rgba(18, 18, 18, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 6px;
+        }
+
+        .price-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.98rem;
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #aaaaaa;
+            margin-top: 2px;
+        }
+
+        .dots {
+            flex-grow: 1;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            margin: 0 10px;
+            position: relative;
+            top: -2px;
+        }
+
+        .price-val {
+            font-family: 'Cinzel', serif;
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .drink-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            background: #d63031;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body { background-size: contain; background-position: top center; background-attachment: scroll; }
+            .header-logo { height: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="menu-header">
+        <a href="menu.html" class="back-btn" title="Volver al menú">‹</a>
+        <a href="menu.html"><img src="img/categorias/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo"></a>
+        <div class="header-placeholder"></div>
+    </header>
+
+    <section class="category-header">
+        <h1 class="category-title">Bebidas</h1>
+        <p class="category-subtitle">Refrescos y Jarras</p>
+        <div class="title-line"></div>
+    </section>
+
+    <main class="dishes-container">
+
+        <!-- REFRESCOS Y BÁSICOS -->
+        <div class="section-box">
+            <h2 class="section-title">Refrescos & Tradicionales</h2>
+            <div class="price-list" id="refrescosPriceList">
+                <div class="price-item">
+                    <div class="item-info">
+                        <span>Coca-Cola / Sabores</span>
+                        <span class="item-desc">Lata o botella 355ml</span>
+                    </div>
+                    <div class="dots"></div>
+                    <span class="price-val">$30.00</span>
+                </div>
+                <div class="price-item">
+                    <div class="item-info">
+                        <span>Té Jaztea</span>
+                        <span class="item-desc">Helado embotellado 500ml</span>
+                    </div>
+                    <div class="dots"></div>
+                    <span class="price-val">$30.00</span>
+                </div>
+                <div class="price-item">
+                    <div class="item-info">
+                        <span>Agua Embotellada</span>
+                        <span class="item-desc">Purificada 500ml</span>
+                    </div>
+                    <div class="dots"></div>
+                    <span class="price-val">$20.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AGUAS PREPARADAS Y JARRAS -->
+        <div class="section-box">
+            <h2 class="section-title">Aguas Frescas & Jarras</h2>
+            <div class="price-list" id="jarrasPriceList">
+                <div class="price-item">
+                    <div class="item-info">
+                        <span>Jarra de Limón Natural</span>
+                        <span class="item-desc">2 Litros - Preparada al momento</span>
+                    </div>
+                    <div class="dots"></div>
+                    <span class="price-val">$90.00</span>
+                </div>
+                <div class="price-item">
+                    <div class="item-info">
+                        <span>Jarra Té de la Casa</span>
+                        <span class="item-desc">2 Litros - Té helado especial</span>
+                    </div>
+                    <div class="dots"></div>
+                    <span class="price-val">$90.00</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/zenbao-config.js"></script>
+    <script src="js/zenbao-store.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ZenbaoStore.subscribeData(function(data) {
+                const products = ((data.products && data.products.bebidas) || []).filter(p => !p.hidden);
+                const refrescosList = document.getElementById('refrescosPriceList');
+                const jarrasList = document.getElementById('jarrasPriceList');
+
+                const refrescosItems = products.filter(p => p.subSection === 'refrescos' || (!p.subSection && !p.name.toLowerCase().includes('jarra')));
+                const jarrasItems = products.filter(p => p.subSection === 'jarras' || (!p.subSection && p.name.toLowerCase().includes('jarra')));
+
+                if (refrescosList && refrescosItems.length > 0) {
+                    refrescosList.innerHTML = refrescosItems.map(p => `
+                        <div class="price-item">
+                            <div class="item-info">
+                                <span>${p.name}</span>
+                                ${p.description ? `<span class="item-desc">${p.description}</span>` : ''}
+                            </div>
+                            <div class="dots"></div>
+                            <span class="price-val">${p.price}</span>
+                        </div>
+                    `).join('');
+                }
+
+                if (jarrasList && jarrasItems.length > 0) {
+                    jarrasList.innerHTML = jarrasItems.map(p => `
+                        <div class="price-item">
+                            <div class="item-info">
+                                <span>${p.name}</span>
+                                ${p.description ? `<span class="item-desc">${p.description}</span>` : ''}
+                            </div>
+                            <div class="dots"></div>
+                            <span class="price-val">${p.price}</span>
+                        </div>
+                    `).join('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
