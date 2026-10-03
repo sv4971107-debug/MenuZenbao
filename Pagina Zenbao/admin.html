@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenbao - Panel de Control</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            background-image: url('img/categorias/FondoPagina.jpg');
+            background-size: cover;          
+            background-position: center;     
+            background-repeat: no-repeat;     
+            background-attachment: fixed;      
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* HEADER */
+        .admin-header {
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .header-logo {
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-header {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0 14px;
+            height: 36px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            line-height: 1;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-header:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffffff;
+        }
+
+        .btn-header.btn-danger {
+            background: rgba(214, 48, 49, 0.2);
+            border-color: #d63031;
+            color: #ff8888;
+        }
+
+        .btn-header.btn-danger:hover {
+            background: #d63031;
+            color: #ffffff;
+        }
+
+        /* CONTAINER MAIN */
+        .admin-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #aaaaaa;
+            font-family: 'Cinzel', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #ffd700;
+            border-bottom-color: #ffd700;
+        }
+
+        /* BOTÓN PRINCIPAL */
+        .btn-primary {
+            background: linear-gradient(135deg, #d63031 0%, #b22222 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(214, 48, 49, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(214, 48, 49, 0.6);
+        }
+
+        /* SELECTOR CATEGORÍA */
+        .category-filter {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            min-width: 220px;
+        }
+
+        /* LISTA DE ITEMS */
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .item-card {
+            background: rgba(18, 18, 18, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.2s ease;
+        }
+
+        .item-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .item-thumb {
+            width: 75px;
+            height: 75px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #222;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex-grow: 1;
+        }
+
+        .item-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .item-price {
+            font-family: 'Cinzel', serif;
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .item-desc {
+            font-size: 0.82rem;
+            color: #bbbbbb;
+            line-height: 1.4;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .btn-icon.btn-delete:hover {
+            background: #d63031;
+            border-color: #d63031;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: rgba(22, 22, 22, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 28px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #cccccc;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: #d63031;
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .password-wrapper .form-input {
+            padding-right: 44px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: color 0.2s ease, background-color 0.2s ease;
+            user-select: none;
+        }
+
+        .toggle-password:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-password:focus {
+            outline: none;
+            color: #d63031;
+        }
+
+        .eye-icon {
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .webp-badge {
+            display: inline-block;
+            background: rgba(0, 184, 148, 0.2);
+            border: 1px solid #00b894;
+            color: #55efc4;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cccccc;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .preview-box {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-time {
+            font-size: 0.78rem;
+            color: #ff7777;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .history-desc {
+            font-size: 0.88rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .btn-restore {
+            background: linear-gradient(135deg, #00b894 0%, #00896f 100%);
+            color: #ffffff;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn-restore:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px 16px;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .modal-content {
+                padding: 22px 16px;
+            }
+            .item-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .item-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER DE CONTROL -->
+    <header class="admin-header">
+        <img src="img/categorias/LogoZenbaoB.png" alt="Zenbao Logo" class="header-logo">
+        <div class="header-actions">
+            <a href="menu.html" target="_blank" class="btn-header">👁️ Ver Menú</a>
+            <button onclick="openHistoryModal()" class="btn-header">📜 Historial de Cambios</button>
+            <button onclick="openConfigModal()" class="btn-header">⚙️ Credenciales</button>
+            <button onclick="logout()" class="btn-header btn-danger">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        
+        <!-- BANNER DE ESTADO DE NUBE / TIEMPO REAL -->
+        <div id="cloudStatusBanner" style="margin-bottom: 22px; padding: 14px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; background: rgba(0, 184, 148, 0.12); border: 1px solid rgba(0, 184, 148, 0.3); color: #55efc4; transition: all 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span id="cloudStatusIcon" style="font-size: 1.3rem;">🟢</span>
+                <div>
+                    <strong id="cloudStatusTitle" style="display: block; font-size: 0.95rem; color: #ffffff;">Sincronización en Tiempo Real Activa</strong>
+                    <span id="cloudStatusText" style="font-size: 0.82rem; opacity: 0.9; color: #dcdcdc;">Conectado a Firebase Nube. Los cambios que hagas se verán al instante en todos los celulares.</span>
+                </div>
+            </div>
+            <button id="cloudStatusHelpBtn" onclick="openCloudHelpModal()" style="display: none; background: #d63031; border: none; color: #fff; padding: 7px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+                🔧 ¿Cómo solucionarlo?
+            </button>
+        </div>
+
+        <!-- PESTAÑAS -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('productsTab', this)">🍣 Platillos / Productos</button>
+            <button class="tab-btn" onclick="switchTab('categoriesTab', this)">📂 Categorías del Menú</button>
+        </div>
+
+        <!-- SECCIÓN 1: PRODUCTOS -->
+        <div id="productsTab">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Gestión de Platillos</h2>
+                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 4px;">Selecciona la categoría para agregar, editar o reordenar platillos.</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="categorySelect" class="category-filter" onchange="renderProducts()">
+                        <!-- Categorías dinámicas -->
+                    </select>
+                    <button class="btn-primary" onclick="openProductModal()">+ Nuevo Platillo</button>
+                </div>
+            </div>
+
+            <div id="productsList" class="items-list">
+                <!-- Se renderiza con JS -->
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: CATEGORÍAS -->
+        <div id="categoriesTab" style="display: none;">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Categorías de la Carta</h2>
+                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 4px;">Puedes cambiar el orden o añadir nuevas secciones al menú.</p>
+                </div>
+                <button class="btn-primary" onclick="openCategoryModal()">+ Nueva Categoría</button>
+            </div>
+
+            <div id="categoriesList" class="items-list">
+                <!-- Se renderiza con JS -->
+            </div>
+        </div>
+
+        <!-- BOTÓN RESTABLECER DATOS -->
+        <div style="margin-top: 40px; text-align: center; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 25px;">
+            <button onclick="resetDataConfirm()" style="background: transparent; border: 1px dashed #d63031; color: #ff7777; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;">
+                🔄 Restablecer Menú a la Configuración Original
+            </button>
+        </div>
+    </main>
+
+    <!-- MODAL PRODUCTO -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 id="productModalTitle" class="modal-title">Agregar Nuevo Platillo</h3>
+            <form id="productForm">
+                <input type="hidden" id="prodId">
+                
+                <div class="form-group">
+                    <label class="form-label">Categoría</label>
+                    <select id="prodCategory" class="form-select" onchange="updateSubSectionField()" required></select>
+                </div>
+
+                <div class="form-group" id="subSectionGroup" style="display: none;">
+                    <label class="form-label" id="subSectionLabel">¿En qué recuadro deseas mostrar este platillo?</label>
+                    <select id="prodSubSection" class="form-select" onchange="updateSubSectionField()"></select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nombre del Platillo / Sushi / Salsa</label>
+                    <input type="text" id="prodName" class="form-input" placeholder="Ej. California Spicy Roll o Salsa BBQ" required>
+                </div>
+
+                <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="prodHidden" style="width: 20px; height: 20px; cursor: pointer; accent-color: #d63031;">
+                    <label for="prodHidden" class="form-label" style="margin-bottom: 0; cursor: pointer; font-size: 0.88rem; color: #ffd700;">
+                        🙈 Ocultar este platillo del menú público (Marcar como Agotado)
+                    </label>
+                </div>
+
+                <div class="form-group" id="priceGroup">
+                    <label class="form-label">Precio</label>
+                    <input type="text" id="prodPrice" class="form-input" placeholder="Ej. $169.00" onblur="if(this.value.trim() && this.value !== 'Incluida') this.value = ZenbaoStore.formatPrice(this.value);" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción / Ingredientes</label>
+                    <textarea id="prodDesc" class="form-textarea" placeholder="250grs de arroz, aguacate, queso philadelphia..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Foto del Platillo (Subir PNG / JPG)</label>
+                    <input type="file" id="prodFileInput" accept="image/*" class="form-input" onchange="handleImageUpload(this)">
+                    <div class="webp-badge">⚡ Auto-conversión a .WebP súper liviano activada</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">O URL de la foto (opcional)</label>
+                    <input type="text" id="prodImage" class="form-input" placeholder="img/clasicos/ejemplo.jpg o https://...">
+                </div>
+
+                <div id="imagePreviewBox" class="preview-box" style="display: none;">
+                    <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 4px;">Vista previa comprimida:</p>
+                    <img id="imagePreview" src="" class="preview-img">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Platillo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CATEGORÍA -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <h3 id="categoryModalTitle" class="modal-title">Agregar Categoría</h3>
+            <form id="categoryForm">
+                <input type="hidden" id="catId">
+
+                <div class="form-group">
+                    <label class="form-label">Nombre de la Categoría</label>
+                    <input type="text" id="catName" class="form-input" placeholder="Ej. Tempuras" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Subtítulo / Leyenda</label>
+                    <input type="text" id="catSubtitle" class="form-input" placeholder="Ej. Crujientes al momento">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Foto de Fondo (Subir o URL)</label>
+                    <input type="file" id="catFileInput" accept="image/*" class="form-input" onchange="handleCatImageUpload(this)">
+                    <input type="text" id="catImage" class="form-input" style="margin-top:6px;" placeholder="URL o ruta de imagen">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeCategoryModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CREDENCIALES -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Cambiar Usuario y Contraseña</h3>
+            <form id="configForm">
+                <div class="form-group">
+                    <label class="form-label">Nuevo Usuario</label>
+                    <input type="text" id="newUsername" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nueva Contraseña</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="newPassword" class="form-input" required>
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('newPassword', this)" aria-label="Mostrar contraseña" title="Mostrar contraseña">
+                            <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeConfigModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Credenciales</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIAL DE EDICIONES -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content" style="max-width: 650px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-bottom: 12px; margin-bottom: 15px;">
+                <h3 class="modal-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">📜 Historial de Ediciones</h3>
+                <button type="button" onclick="clearHistoryConfirm()" style="background: rgba(214, 48, 49, 0.2); border: 1px solid #d63031; color: #ff8888; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; font-weight: 600;">Limpiar Historial</button>
+            </div>
+            <p style="font-size: 0.84rem; color: #aaa; margin-bottom: 16px;">
+                Registro con fecha y hora de todos los cambios realizados. Puedes restaurar el menú a cualquiera de estas versiones en cualquier momento.
+            </p>
+            
+            <div id="historyList" style="max-height: 380px; overflow-y: auto; padding-right: 4px;">
+                <!-- Se renderiza dinámicamente con JS -->
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeHistoryModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ALERTA PERSONALIZADA (REEMPLAZA NATIVE ALERT) -->
+    <div id="customAlertModal" class="modal" style="z-index: 3000;">
+        <div class="modal-content" style="max-width: 420px; text-align: center; padding: 25px 20px; background: rgba(22, 22, 22, 0.98); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+            <div id="customAlertIcon" style="font-size: 2.8rem; margin-bottom: 10px;">✅</div>
+            <h3 id="customAlertTitle" class="modal-title" style="border-bottom: none; margin-bottom: 8px; font-size: 1.3rem; font-family: 'Cinzel', serif;">Notificación</h3>
+            <p id="customAlertMessage" style="font-size: 0.92rem; color: #dddddd; margin-bottom: 24px; line-height: 1.5; white-space: pre-line;"></p>
+            <button type="button" id="customAlertBtn" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.95rem;">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMACIÓN PERSONALIZADA (REEMPLAZA NATIVE CONFIRM) -->
+    <div id="customConfirmModal" class="modal" style="z-index: 3000;">
+        <div class="modal-content" style="max-width: 440px; text-align: center; padding: 25px 20px; background: rgba(22, 22, 22, 0.98); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+            <div id="customConfirmIcon" style="font-size: 2.8rem; margin-bottom: 10px;">⚠️</div>
+            <h3 id="customConfirmTitle" class="modal-title" style="border-bottom: none; margin-bottom: 8px; font-size: 1.3rem; font-family: 'Cinzel', serif;">Confirmación</h3>
+            <p id="customConfirmMessage" style="font-size: 0.92rem; color: #dddddd; margin-bottom: 24px; line-height: 1.5; white-space: pre-line;"></p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" id="customConfirmCancelBtn" class="btn-header" style="flex: 1; padding: 10px; text-align: center; justify-content: center; font-size: 0.9rem;">Cancelar</button>
+                <button type="button" id="customConfirmOkBtn" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.9rem;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AYUDA DE NUBE / REGLAS DE FIREBASE -->
+    <div id="cloudHelpModal" class="modal" style="z-index: 2500;">
+        <div class="modal-content" style="max-width: 580px; text-align: left;">
+            <h3 class="modal-title" style="color: #ff7777; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px;">☁️ Guía: Activar Sincronización en la Nube</h3>
+            <div style="font-size: 0.88rem; color: #dddddd; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; margin-top: 15px;">
+                <p>
+                    Si los cambios no se reflejan en tiempo real en otros celulares, se debe a que <strong>las Reglas de Seguridad de Firestore en Firebase expiran por defecto</strong> a los 30 días si creaste el proyecto en Modo Prueba.
+                </p>
+                <div style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 8px; border-left: 4px solid #ffd700;">
+                    <strong style="color: #ffd700;">Pasos sencillos para corregirlo (1 minuto):</strong>
+                    <ol style="margin-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+                        <li>Entra a la consola de Firebase: <a href="https://console.firebase.google.com/" target="_blank" style="color: #55efc4; font-weight: 600; text-decoration: underline;">console.firebase.google.com</a></li>
+                        <li>Abre tu proyecto <strong>Zenbao Menu</strong> y haz clic en <strong>Firestore Database</strong> en el menú izquierdo.</li>
+                        <li>Haz clic en la pestaña <strong>Reglas (Rules)</strong> arriba.</li>
+                        <li>Reemplaza todo el código existente por este (permite lectura y escritura):
+                            <pre style="background: #111; padding: 10px; border-radius: 6px; color: #55efc4; font-size: 0.82rem; margin-top: 6px; overflow-x: auto; border: 1px solid rgba(255,255,255,0.1);">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+                        </li>
+                        <li>Haz clic en el botón azul <strong>Publicar (Publish)</strong> arriba a la derecha. ¡Y listo!</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button type="button" class="btn-primary" style="width: 100%; justify-content: center;" onclick="closeCloudHelpModal()">Entendido, ya lo revisé</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cargar Firebase SDK + Configuración + Almacén Zenbao -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/zenbao-config.js"></script>
+    <script src="js/zenbao-store.js"></script>
+
+    <script>
+        // NOTIFICACIÓN PERSONALIZADA EN CUADRO DE TEXTO (REEMPLAZA NATIVE ALERT)
+        function showCustomAlert(message, title = 'Notificación', icon = '✅', onOk = null) {
+            document.getElementById('customAlertIcon').textContent = icon;
+            document.getElementById('customAlertTitle').textContent = title;
+            document.getElementById('customAlertMessage').textContent = message;
+            
+            const btn = document.getElementById('customAlertBtn');
+            btn.onclick = function() {
+                document.getElementById('customAlertModal').style.display = 'none';
+                if (typeof onOk === 'function') onOk();
+            };
+            
+            document.getElementById('customAlertModal').style.display = 'flex';
+        }
+
+        // CONFIRMACIÓN PERSONALIZADA EN CUADRO DE TEXTO (REEMPLAZA NATIVE CONFIRM)
+        function showCustomConfirm(message, onConfirm, title = 'Confirmación', icon = '⚠️', confirmBtnText = 'Sí, Confirmar', cancelBtnText = 'Cancelar') {
+            document.getElementById('customConfirmIcon').textContent = icon;
+            document.getElementById('customConfirmTitle').textContent = title;
+            document.getElementById('customConfirmMessage').textContent = message;
+            
+            const okBtn = document.getElementById('customConfirmOkBtn');
+            const cancelBtn = document.getElementById('customConfirmCancelBtn');
+
+            okBtn.textContent = confirmBtnText;
+            cancelBtn.textContent = cancelBtnText;
+
+            okBtn.onclick = function() {
+                document.getElementById('customConfirmModal').style.display = 'none';
+                if (typeof onConfirm === 'function') onConfirm();
+            };
+
+            cancelBtn.onclick = function() {
+                document.getElementById('customConfirmModal').style.display = 'none';
+            };
+
+            document.getElementById('customConfirmModal').style.display = 'flex';
+        }
+
+        // Verificar Autenticación
+        if (sessionStorage.getItem('zenbao_admin_auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('zenbao_admin_auth');
+            window.location.href = 'login.html';
+        }
+
+        // Pestañas
+        function switchTab(tabId, btn) {
+            document.getElementById('productsTab').style.display = tabId === 'productsTab' ? 'block' : 'none';
+            document.getElementById('categoriesTab').style.display = tabId === 'categoriesTab' ? 'block' : 'none';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (tabId === 'categoriesTab') {
+                renderCategories();
+            } else {
+                renderProducts();
+            }
+        }
+
+        // Escuchar cambios de estado de la nube de Firebase
+        ZenbaoStore.addStatusListener(function(statusObj) {
+            updateCloudStatusUI(statusObj);
+        });
+
+        function updateCloudStatusUI(statusObj) {
+            const banner = document.getElementById('cloudStatusBanner');
+            const icon = document.getElementById('cloudStatusIcon');
+            const title = document.getElementById('cloudStatusTitle');
+            const text = document.getElementById('cloudStatusText');
+            const helpBtn = document.getElementById('cloudStatusHelpBtn');
+
+            if (!banner) return;
+
+            if (statusObj.status === 'connected') {
+                banner.style.background = 'rgba(0, 184, 148, 0.15)';
+                banner.style.borderColor = 'rgba(0, 184, 148, 0.4)';
+                icon.textContent = '🟢';
+                title.textContent = 'Sincronización en Tiempo Real Activa';
+                title.style.color = '#ffffff';
+                text.textContent = 'Conectado a Firebase Nube. Los cambios que hagas se verán al instante en todos los celulares.';
+                text.style.color = '#dcdcdc';
+                helpBtn.style.display = 'none';
+            } else if (statusObj.status === 'error') {
+                banner.style.background = 'rgba(214, 48, 49, 0.25)';
+                banner.style.borderColor = 'rgba(214, 48, 49, 0.6)';
+                icon.textContent = '🔴';
+                title.textContent = 'Atención: Sin Sincronización en Tiempo Real';
+                title.style.color = '#ff7777';
+                text.textContent = statusObj.message || 'Ocurrió un error al conectar con la nube de Firebase.';
+                text.style.color = '#ffaaaa';
+                helpBtn.style.display = 'inline-block';
+            } else if (statusObj.status === 'connecting') {
+                banner.style.background = 'rgba(255, 159, 67, 0.15)';
+                banner.style.borderColor = 'rgba(255, 159, 67, 0.4)';
+                icon.textContent = '🟡';
+                title.textContent = 'Conectando con la Nube...';
+                title.style.color = '#ffffff';
+                text.textContent = 'Estableciendo conexión en vivo con Firebase...';
+                text.style.color = '#dcdcdc';
+                helpBtn.style.display = 'none';
+            } else {
+                banner.style.background = 'rgba(120, 120, 120, 0.15)';
+                banner.style.borderColor = 'rgba(120, 120, 120, 0.3)';
+                icon.textContent = '⚪';
+                title.textContent = 'Modo Local (Sin Nube)';
+                title.style.color = '#ffffff';
+                text.textContent = statusObj.message || 'Los cambios sólo se guardarán en este dispositivo.';
+                text.style.color = '#cccccc';
+                helpBtn.style.display = 'none';
+            }
+        }
+
+        function openCloudHelpModal() {
+            document.getElementById('cloudHelpModal').style.display = 'flex';
+        }
+        function closeCloudHelpModal() {
+            document.getElementById('cloudHelpModal').style.display = 'none';
+        }
+
+        // Carga Inicial y Sincronización en Vivo en el Panel de Administración
+        document.addEventListener('DOMContentLoaded', function() {
+            ZenbaoStore.subscribeData(function(data) {
+                populateCategorySelects();
+                const activeTab = document.querySelector('.tab-btn.active');
+                if (activeTab && activeTab.getAttribute('onclick') && activeTab.getAttribute('onclick').includes('categoriesTab')) {
+                    renderCategories();
+                } else {
+                    renderProducts();
+                }
+            });
+        });
+
+        function populateCategorySelects() {
+            const categories = ZenbaoStore.getCategories();
+            const filterSelect = document.getElementById('categorySelect');
+            const prodCatSelect = document.getElementById('prodCategory');
+            
+            const currentFilterVal = filterSelect ? filterSelect.value : '';
+            const currentProdCatVal = prodCatSelect ? prodCatSelect.value : '';
+
+            if (filterSelect) filterSelect.innerHTML = '';
+            if (prodCatSelect) prodCatSelect.innerHTML = '';
+
+            categories.forEach(cat => {
+                if (filterSelect) {
+                    const opt1 = document.createElement('option');
+                    opt1.value = cat.id;
+                    opt1.textContent = cat.name;
+                    filterSelect.appendChild(opt1);
+                }
+
+                if (prodCatSelect) {
+                    const opt2 = document.createElement('option');
+                    opt2.value = cat.id;
+                    opt2.textContent = cat.name;
+                    prodCatSelect.appendChild(opt2);
+                }
+            });
+
+            if (filterSelect && currentFilterVal && categories.some(c => c.id === currentFilterVal)) {
+                filterSelect.value = currentFilterVal;
+            }
+            if (prodCatSelect && currentProdCatVal && categories.some(c => c.id === currentProdCatVal)) {
+                prodCatSelect.value = currentProdCatVal;
+            }
+        }
+
+        // RENDERIZAR PRODUCTOS
+        function renderProducts() {
+            const filterSelect = document.getElementById('categorySelect');
+            const selectedValBefore = filterSelect ? filterSelect.value : '';
+            
+            populateCategorySelects();
+            
+            if (filterSelect && selectedValBefore && Array.from(filterSelect.options).some(o => o.value === selectedValBefore)) {
+                filterSelect.value = selectedValBefore;
+            }
+
+            const catId = filterSelect ? filterSelect.value : '';
+            const productsList = document.getElementById('productsList');
+            const products = catId ? ZenbaoStore.getProducts(catId) : [];
+
+            productsList.innerHTML = '';
+
+            if (products.length === 0) {
+                productsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #aaa; background: rgba(18,18,18,0.5); border-radius: 10px;">
+                        No hay platillos registrados en esta categoría aún.
+                    </div>
+                `;
+                return;
+            }
+
+            products.forEach((prod, index) => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+
+                if (prod.hidden) {
+                    card.style.opacity = '0.65';
+                    card.style.border = '1px dashed #ff7777';
+                }
+
+                const imgSrc = prod.image || 'img/categorias/LogoZenbaoB.png';
+
+                let subBadge = '';
+                if (catId === 'boneless') {
+                    const labels = { boneless: 'Recuadro: Boneless', sauce: 'Recuadro: Salsas', papas: 'Recuadro: Papas Fritas' };
+                    const label = labels[prod.subSection] || 'Recuadro: Boneless';
+                    subBadge = `<span style="font-size:0.7rem; color:#ff9f43; border:1px solid #ff9f43; padding:1px 5px; border-radius:3px; margin-left:6px;">📍 ${label}</span>`;
+                } else if (catId === 'bebidas') {
+                    const labels = { refrescos: 'Refrescos & Tradicionales', jarras: 'Aguas & Jarras' };
+                    const label = labels[prod.subSection] || 'Refrescos & Tradicionales';
+                    subBadge = `<span style="font-size:0.7rem; color:#00cec9; border:1px solid #00cec9; padding:1px 5px; border-radius:3px; margin-left:6px;">📍 ${label}</span>`;
+                }
+
+                const hiddenBadge = prod.hidden ? `<span style="font-size:0.7rem; color:#ff7777; border:1px solid #ff7777; padding:1px 5px; border-radius:3px; margin-left:6px; background: rgba(214, 48, 49, 0.25);">🙈 OCULTO (AGOTADO)</span>` : '';
+
+                card.innerHTML = `
+                    <img src="${imgSrc}" class="item-thumb" alt="${prod.name}" onerror="this.src='img/categorias/LogoZenbaoB.png'">
+                    <div class="item-info">
+                        <div class="item-title">
+                            ${prod.name} 
+                            ${index === 0 ? '<span style="font-size:0.7rem; color:#ffd700; border:1px solid #ffd700; padding:1px 4px; border-radius:3px; margin-left:6px;">★ PRIMERO</span>' : ''}
+                            ${subBadge}
+                            ${hiddenBadge}
+                        </div>
+                        <div class="item-price">${prod.price}</div>
+                        <div class="item-desc">${prod.description || 'Sin descripción'}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="toggleProdVisibility('${catId}', '${prod.id}')" class="btn-icon" title="${prod.hidden ? 'Volver a mostrar en el menú público' : 'Ocultar del menú público (Agotado)'}">${prod.hidden ? '🙈' : '👁️'}</button>
+                        <button onclick="moveProd('${catId}', ${index}, -1)" class="btn-icon" title="Subir (poner antes)" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+                        <button onclick="moveProd('${catId}', ${index}, 1)" class="btn-icon" title="Bajar (poner después)" ${index === products.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+                        <button onclick="editProduct('${catId}', '${prod.id}')" class="btn-icon" title="Editar">✏️</button>
+                        <button onclick="deleteProd('${catId}', '${prod.id}')" class="btn-icon btn-delete" title="Quitar del menú activo">🗑️</button>
+                    </div>
+                `;
+                productsList.appendChild(card);
+            });
+        }
+
+        // CONTROL DINÁMICO DEL CAMPO RECUADRO / SECCIÓN (BONELESS, BEBIDAS, ETC.) Y VISIBILIDAD DE PRECIO
+        function updateSubSectionField(selectedSubSection = null) {
+            const catSelect = document.getElementById('prodCategory');
+            const catId = catSelect ? catSelect.value : '';
+            const subSectionGroup = document.getElementById('subSectionGroup');
+            const subSectionSelect = document.getElementById('prodSubSection');
+            const priceGroup = document.getElementById('priceGroup');
+            const priceInput = document.getElementById('prodPrice');
+
+            if (!subSectionGroup || !subSectionSelect) return;
+
+            const currentSubVal = selectedSubSection || subSectionSelect.value;
+            const registeredCat = subSectionSelect.getAttribute('data-cat');
+
+            // Solo reconstruir las opciones <option> si la categoría cambió o si se pasa una selección explícita
+            if (registeredCat !== catId || selectedSubSection !== null || !subSectionSelect.innerHTML.trim()) {
+                subSectionSelect.setAttribute('data-cat', catId);
+                if (catId === 'boneless') {
+                    subSectionGroup.style.display = 'block';
+                    subSectionSelect.innerHTML = `
+                        <option value="boneless">🍗 Recuadro de Boneless (Orden de Boneless)</option>
+                        <option value="sauce">🥣 Recuadro de Salsas (Elige tu favorita)</option>
+                        <option value="papas">🍟 Recuadro de Papas Fritas (Complemento)</option>
+                    `;
+                } else if (catId === 'bebidas') {
+                    subSectionGroup.style.display = 'block';
+                    subSectionSelect.innerHTML = `
+                        <option value="refrescos">🥤 Refrescos & Tradicionales</option>
+                        <option value="jarras">🍹 Aguas Frescas & Jarras</option>
+                    `;
+                } else {
+                    subSectionGroup.style.display = 'none';
+                    subSectionSelect.innerHTML = '';
+                    subSectionSelect.removeAttribute('data-cat');
+                }
+
+                if (currentSubVal && Array.from(subSectionSelect.options).some(o => o.value === currentSubVal)) {
+                    subSectionSelect.value = currentSubVal;
+                }
+            } else {
+                if (catId === 'boneless' || catId === 'bebidas') {
+                    subSectionGroup.style.display = 'block';
+                } else {
+                    subSectionGroup.style.display = 'none';
+                }
+            }
+
+            // Ocultar campo de precio para Salsas en Boneless
+            const isSauce = (catId === 'boneless' && subSectionSelect.value === 'sauce');
+            if (priceGroup && priceInput) {
+                if (isSauce) {
+                    priceGroup.style.display = 'none';
+                    priceInput.removeAttribute('required');
+                } else {
+                    priceGroup.style.display = 'block';
+                    priceInput.setAttribute('required', 'required');
+                }
+            }
+        }
+
+        // MOVER PRODUCTO UP / DOWN
+        function moveProd(catId, index, dir) {
+            ZenbaoStore.moveProduct(catId, index, dir);
+            renderProducts();
+        }
+
+        // BORRAR PRODUCTO
+        function deleteProd(catId, prodId) {
+            const products = ZenbaoStore.getProducts(catId);
+            const prod = products.find(p => p.id === prodId);
+            const prodName = prod ? prod.name : '';
+
+            showCustomConfirm(
+                `¿Seguro que deseas eliminar el platillo "${prodName}"?`,
+                function() {
+                    ZenbaoStore.deleteProduct(catId, prodId);
+                    renderProducts();
+                    showCustomAlert(`El platillo "${prodName}" ha sido eliminado.`, 'Platillo Eliminado', '🗑️');
+                },
+                'Eliminar Platillo',
+                '🗑️',
+                'Sí, Eliminar',
+                'Cancelar'
+            );
+        }
+
+        // ALTERNAR VISIBILIDAD DE PLATILLO (OCULTAR / MOSTRAR CON EL OJO)
+        function toggleProdVisibility(catId, prodId) {
+            const isNowHidden = ZenbaoStore.toggleProductVisibility(catId, prodId);
+            renderProducts();
+            const products = ZenbaoStore.getProducts(catId);
+            const prod = products.find(p => p.id === prodId);
+            const prodName = prod ? prod.name : '';
+
+            if (isNowHidden) {
+                showCustomAlert(`El platillo "${prodName}" ahora está OCULTO en el menú público.\n\nLos clientes no lo verán en sus celulares hasta que vuelvas a presionar el ojo.`, 'Platillo Ocultado', '🙈');
+            } else {
+                showCustomAlert(`El platillo "${prodName}" vuelve a estar VISIBLE en el menú público.`, 'Platillo Visible', '👁️');
+            }
+        }
+
+        // MODAL PRODUCTO
+        function openProductModal() {
+            document.getElementById('productForm').reset();
+            document.getElementById('prodId').value = '';
+            const hiddenChk = document.getElementById('prodHidden');
+            if (hiddenChk) hiddenChk.checked = false;
+            document.getElementById('imagePreviewBox').style.display = 'none';
+            document.getElementById('productModalTitle').textContent = 'Agregar Nuevo Platillo';
+            
+            const currentCat = document.getElementById('categorySelect').value;
+            if (currentCat) {
+                document.getElementById('prodCategory').value = currentCat;
+            }
+            
+            const subSectionSelect = document.getElementById('prodSubSection');
+            if (subSectionSelect) subSectionSelect.removeAttribute('data-cat');
+
+            updateSubSectionField();
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        function editProduct(catId, prodId) {
+            const products = ZenbaoStore.getProducts(catId);
+            const prod = products.find(p => p.id === prodId);
+            if (!prod) return;
+
+            document.getElementById('productModalTitle').textContent = 'Editar Platillo';
+            document.getElementById('prodId').value = prod.id;
+            document.getElementById('prodCategory').value = catId;
+            document.getElementById('prodName').value = prod.name;
+            document.getElementById('prodPrice').value = prod.price || '';
+            document.getElementById('prodDesc').value = prod.description || '';
+            document.getElementById('prodImage').value = prod.image || '';
+
+            const hiddenChk = document.getElementById('prodHidden');
+            if (hiddenChk) hiddenChk.checked = !!prod.hidden;
+
+            updateSubSectionField(prod.subSection);
+
+            if (prod.image) {
+                document.getElementById('imagePreview').src = prod.image;
+                document.getElementById('imagePreviewBox').style.display = 'block';
+            } else {
+                document.getElementById('imagePreviewBox').style.display = 'none';
+            }
+
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        // CONVERSIÓN WEBP AL SUBIR IMAGEN DE PRODUCTO
+        async function handleImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                try {
+                    const webpUrl = await ZenbaoStore.convertImageToWebP(file, 550, 0.70);
+                    document.getElementById('prodImage').value = webpUrl;
+                    document.getElementById('imagePreview').src = webpUrl;
+                    document.getElementById('imagePreviewBox').style.display = 'block';
+                } catch (e) {
+                    showCustomAlert('Error al procesar la imagen: ' + e.message, 'Error de Imagen', '⚠️');
+                }
+            }
+        }
+
+        // SUBMIT FORMULARIO PRODUCTO CON CONFIRMACIÓN Y NOTIFICACIÓN
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const prodName = document.getElementById('prodName').value.trim();
+            const isEditing = !!document.getElementById('prodId').value;
+            const actionMsg = isEditing ? `¿Deseas guardar los cambios realizados en el platillo "${prodName}"?` : `¿Confirmas que deseas agregar el platillo "${prodName}" al menú?`;
+
+            showCustomConfirm(
+                actionMsg,
+                function() {
+                    const catId = document.getElementById('prodCategory').value;
+                    const subSectionGroup = document.getElementById('subSectionGroup');
+                    const subSecVal = (subSectionGroup && subSectionGroup.style.display !== 'none') ? document.getElementById('prodSubSection').value : null;
+
+                    let finalPrice = document.getElementById('prodPrice').value.trim();
+                    if (catId === 'boneless' && subSecVal === 'sauce') {
+                        finalPrice = 'Incluida';
+                    } else {
+                        finalPrice = ZenbaoStore.formatPrice(finalPrice);
+                    }
+
+                    const hiddenChk = document.getElementById('prodHidden');
+
+                    const prodData = {
+                        id: document.getElementById('prodId').value || null,
+                        name: prodName,
+                        price: finalPrice,
+                        description: document.getElementById('prodDesc').value.trim(),
+                        image: document.getElementById('prodImage').value.trim(),
+                        subSection: subSecVal,
+                        hidden: hiddenChk ? hiddenChk.checked : false
+                    };
+
+                    ZenbaoStore.saveProduct(catId, prodData);
+                    closeProductModal();
+                    renderProducts();
+
+                    showCustomAlert(`El platillo "${prodName}" ha sido guardado exitosamente en el menú.`, 'Platillo Guardado', '✅');
+                },
+                isEditing ? 'Guardar Cambios' : 'Agregar Platillo',
+                '🍣',
+                'Sí, Guardar',
+                'Cancelar'
+            );
+        });
+
+        // RENDERIZAR CATEGORÍAS
+        function renderCategories() {
+            const categoriesList = document.getElementById('categoriesList');
+            const categories = ZenbaoStore.getCategories();
+
+            categoriesList.innerHTML = '';
+
+            categories.forEach((cat, index) => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+
+                const imgSrc = cat.image || 'img/categorias/LogoZenbaoB.png';
+
+                card.innerHTML = `
+                    <img src="${imgSrc}" class="item-thumb" alt="${cat.name}" onerror="this.src='img/categorias/LogoZenbaoB.png'">
+                    <div class="item-info">
+                        <div class="item-title">${cat.name}</div>
+                        <div class="item-desc">${cat.subtitle || 'Sin subtítulo'}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="moveCat(${index}, -1)" class="btn-icon" title="Subir" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
+                        <button onclick="moveCat(${index}, 1)" class="btn-icon" title="Bajar" ${index === categories.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
+                        <button onclick="editCategory('${cat.id}')" class="btn-icon" title="Editar">✏️</button>
+                        <button onclick="deleteCat('${cat.id}')" class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+                    </div>
+                `;
+                categoriesList.appendChild(card);
+            });
+        }
+
+        function moveCat(index, dir) {
+            ZenbaoStore.moveCategory(index, dir);
+            renderCategories();
+        }
+
+        function deleteCat(catId) {
+            showCustomConfirm(
+                '¿Eliminar esta categoría y todos los platillos contenidos en ella?',
+                function() {
+                    ZenbaoStore.deleteCategory(catId);
+                    renderCategories();
+                    showCustomAlert('La categoría ha sido eliminada correctamente.', 'Categoría Eliminada', '🗑️');
+                },
+                'Eliminar Categoría',
+                '📂',
+                'Sí, Eliminar',
+                'Cancelar'
+            );
+        }
+
+        function openCategoryModal() {
+            document.getElementById('categoryForm').reset();
+            document.getElementById('catId').value = '';
+            document.getElementById('categoryModalTitle').textContent = 'Agregar Categoría';
+            document.getElementById('categoryModal').style.display = 'flex';
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').style.display = 'none';
+        }
+
+        function editCategory(catId) {
+            const categories = ZenbaoStore.getCategories();
+            const cat = categories.find(c => c.id === catId);
+            if (!cat) return;
+
+            document.getElementById('categoryModalTitle').textContent = 'Editar Categoría';
+            document.getElementById('catId').value = cat.id;
+            document.getElementById('catName').value = cat.name;
+            document.getElementById('catSubtitle').value = cat.subtitle || '';
+            document.getElementById('catImage').value = cat.image || '';
+
+            document.getElementById('categoryModal').style.display = 'flex';
+        }
+
+        async function handleCatImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const webpUrl = await ZenbaoStore.convertImageToWebP(input.files[0], 1000, 0.82);
+                document.getElementById('catImage').value = webpUrl;
+            }
+        }
+
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const catData = {
+                id: document.getElementById('catId').value || null,
+                name: document.getElementById('catName').value.trim(),
+                subtitle: document.getElementById('catSubtitle').value.trim(),
+                image: document.getElementById('catImage').value.trim()
+            };
+
+            ZenbaoStore.saveCategory(catData);
+            closeCategoryModal();
+            renderCategories();
+            showCustomAlert('La categoría se guardó exitosamente.', 'Categoría Guardada', '✅');
+        });
+
+        // RESTABLECER DATOS
+        function resetDataConfirm() {
+            showCustomConfirm(
+                '¿Estás seguro de restablecer la carta?\n\n(Tus precios, descripciones y nuevos platillos editados se conservarán tal cual los dejaste).',
+                function() {
+                    ZenbaoStore.resetToDefault();
+                    renderProducts();
+                    showCustomAlert('El menú se ha restablecido exitosamente (conservando tus precios y ediciones actuales).', 'Menú Restablecido', '🔄');
+                },
+                'Restablecer Menú',
+                '🔄',
+                'Sí, Restablecer',
+                'Cancelar'
+            );
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            if (isPassword) {
+                btn.setAttribute('aria-label', 'Ocultar contraseña');
+                btn.setAttribute('title', 'Ocultar contraseña');
+                btn.innerHTML = `
+                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                `;
+            } else {
+                btn.setAttribute('aria-label', 'Mostrar contraseña');
+                btn.setAttribute('title', 'Mostrar contraseña');
+                btn.innerHTML = `
+                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+            }
+        }
+
+        // CONFIG CREDENCIALES
+        function openConfigModal() {
+            document.getElementById('newUsername').value = localStorage.getItem('zenbao_admin_user') || 'admin';
+            const passInput = document.getElementById('newPassword');
+            passInput.value = localStorage.getItem('zenbao_admin_pass') || 'zenbao123';
+            passInput.type = 'password';
+            const toggleBtn = passInput.parentElement.querySelector('.toggle-password');
+            if (toggleBtn) {
+                toggleBtn.setAttribute('aria-label', 'Mostrar contraseña');
+                toggleBtn.setAttribute('title', 'Mostrar contraseña');
+                toggleBtn.innerHTML = `
+                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+            }
+            document.getElementById('configModal').style.display = 'flex';
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').style.display = 'none';
+        }
+
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newUser = document.getElementById('newUsername').value.trim();
+            const newPass = document.getElementById('newPassword').value.trim();
+
+            if (newUser && newPass) {
+                localStorage.setItem('zenbao_admin_user', newUser);
+                localStorage.setItem('zenbao_admin_pass', newPass);
+                closeConfigModal();
+                showCustomAlert('Credenciales actualizadas correctamente.', 'Credenciales Guardadas', '⚙️');
+            }
+        });
+
+        // HISTORIAL DE EDICIONES
+        function openHistoryModal() {
+            renderHistoryList();
+            document.getElementById('historyModal').style.display = 'flex';
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function renderHistoryList() {
+            const history = ZenbaoStore.getHistory();
+            const container = document.getElementById('historyList');
+            if (!container) return;
+
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #aaaaaa; padding: 35px 10px;">
+                        <p style="font-size: 1.1rem; margin-bottom: 6px;">📂 No hay ediciones registradas aún.</p>
+                        <p style="font-size: 0.82rem;">Cualquier cambio que realices en productos o categorías se guardará aquí.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = history.map((item, index) => `
+                <div class="history-item">
+                    <div class="history-info">
+                        <div class="history-time">
+                            🕒 ${item.timestamp} ${index === 0 ? '<span style="background: rgba(0, 184, 148, 0.2); border: 1px solid #00b894; color: #55efc4; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px;">Versión Actual</span>' : ''}
+                        </div>
+                        <div class="history-desc">${escapeHtml(item.description)}</div>
+                    </div>
+                    ${index !== 0 ? `
+                        <button class="btn-restore" onclick="restoreSnapshotConfirm('${item.id}', '${escapeHtml(item.timestamp)}')">
+                            ↩️ Restaurar
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function restoreSnapshotConfirm(histId, timestampStr) {
+            showCustomConfirm(
+                `¿Deseas restaurar el menú a la versión del ${timestampStr}? Se reemplazará el menú actual por dicha versión.`,
+                function() {
+                    const success = ZenbaoStore.restoreHistorySnapshot(histId);
+                    if (success) {
+                        renderProducts();
+                        renderCategories();
+                        renderHistoryList();
+                        showCustomAlert(`Menú restaurado exitosamente a la versión del ${timestampStr}.`, 'Versión Restaurada', '↩️');
+                    } else {
+                        showCustomAlert('No se pudo restaurar la versión seleccionada.', 'Error de Restauración', '⚠️');
+                    }
+                },
+                'Restaurar Versión',
+                '📜',
+                'Sí, Restaurar',
+                'Cancelar'
+            );
+        }
+
+        function clearHistoryConfirm() {
+            showCustomConfirm(
+                '¿Estás seguro de vaciar el historial de cambios? (Tu menú actual NO se borrará)',
+                function() {
+                    ZenbaoStore.clearHistory();
+                    renderHistoryList();
+                    showCustomAlert('El historial de cambios ha sido vaciado.', 'Historial Limpio', '🗑️');
+                },
+                'Vaciar Historial',
+                '📜',
+                'Sí, Vaciar',
+                'Cancelar'
+            );
+        }
+    </script>
+</body>
+</html>
+</html>
