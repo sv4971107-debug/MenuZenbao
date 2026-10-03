@@ -203,7 +203,7 @@
             const container = document.getElementById('dishesContainer');
 
             ZenbaoStore.subscribeData(function(data) {
-                const products = (data.products && data.products.naturales) || [];
+                const products = ((data.products && data.products.naturales) || []).filter(p => !p.hidden);
                 container.innerHTML = '';
 
                 products.forEach(prod => {

@@ -523,6 +523,20 @@
 
     <main class="admin-container">
         
+        <!-- BANNER DE ESTADO DE NUBE / TIEMPO REAL -->
+        <div id="cloudStatusBanner" style="margin-bottom: 22px; padding: 14px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; background: rgba(0, 184, 148, 0.12); border: 1px solid rgba(0, 184, 148, 0.3); color: #55efc4; transition: all 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span id="cloudStatusIcon" style="font-size: 1.3rem;">🟢</span>
+                <div>
+                    <strong id="cloudStatusTitle" style="display: block; font-size: 0.95rem; color: #ffffff;">Sincronización en Tiempo Real Activa</strong>
+                    <span id="cloudStatusText" style="font-size: 0.82rem; opacity: 0.9; color: #dcdcdc;">Conectado a Firebase Nube. Los cambios que hagas se verán al instante en todos los celulares.</span>
+                </div>
+            </div>
+            <button id="cloudStatusHelpBtn" onclick="openCloudHelpModal()" style="display: none; background: #d63031; border: none; color: #fff; padding: 7px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+                🔧 ¿Cómo solucionarlo?
+            </button>
+        </div>
+
         <!-- PESTAÑAS -->
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="switchTab('productsTab', this)">🍣 Platillos / Productos</button>
@@ -592,6 +606,13 @@
                 <div class="form-group">
                     <label class="form-label">Nombre del Platillo / Sushi / Salsa</label>
                     <input type="text" id="prodName" class="form-input" placeholder="Ej. California Spicy Roll o Salsa BBQ" required>
+                </div>
+
+                <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="prodHidden" style="width: 20px; height: 20px; cursor: pointer; accent-color: #d63031;">
+                    <label for="prodHidden" class="form-label" style="margin-bottom: 0; cursor: pointer; font-size: 0.88rem; color: #ffd700;">
+                        🙈 Ocultar este platillo del menú público (Marcar como Agotado)
+                    </label>
                 </div>
 
                 <div class="form-group" id="priceGroup">
@@ -732,6 +753,41 @@
         </div>
     </div>
 
+    <!-- MODAL DE AYUDA DE NUBE / REGLAS DE FIREBASE -->
+    <div id="cloudHelpModal" class="modal" style="z-index: 2500;">
+        <div class="modal-content" style="max-width: 580px; text-align: left;">
+            <h3 class="modal-title" style="color: #ff7777; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px;">☁️ Guía: Activar Sincronización en la Nube</h3>
+            <div style="font-size: 0.88rem; color: #dddddd; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; margin-top: 15px;">
+                <p>
+                    Si los cambios no se reflejan en tiempo real en otros celulares, se debe a que <strong>las Reglas de Seguridad de Firestore en Firebase expiran por defecto</strong> a los 30 días si creaste el proyecto en Modo Prueba.
+                </p>
+                <div style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 8px; border-left: 4px solid #ffd700;">
+                    <strong style="color: #ffd700;">Pasos sencillos para corregirlo (1 minuto):</strong>
+                    <ol style="margin-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+                        <li>Entra a la consola de Firebase: <a href="https://console.firebase.google.com/" target="_blank" style="color: #55efc4; font-weight: 600; text-decoration: underline;">console.firebase.google.com</a></li>
+                        <li>Abre tu proyecto <strong>Zenbao Menu</strong> y haz clic en <strong>Firestore Database</strong> en el menú izquierdo.</li>
+                        <li>Haz clic en la pestaña <strong>Reglas (Rules)</strong> arriba.</li>
+                        <li>Reemplaza todo el código existente por este (permite lectura y escritura):
+                            <pre style="background: #111; padding: 10px; border-radius: 6px; color: #55efc4; font-size: 0.82rem; margin-top: 6px; overflow-x: auto; border: 1px solid rgba(255,255,255,0.1);">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+                        </li>
+                        <li>Haz clic en el botón azul <strong>Publicar (Publish)</strong> arriba a la derecha. ¡Y listo!</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button type="button" class="btn-primary" style="width: 100%; justify-content: center;" onclick="closeCloudHelpModal()">Entendido, ya lo revisé</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Cargar Firebase SDK + Configuración + Almacén Zenbao -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -802,10 +858,77 @@
             }
         }
 
-        // Carga Inicial
+        // Escuchar cambios de estado de la nube de Firebase
+        ZenbaoStore.addStatusListener(function(statusObj) {
+            updateCloudStatusUI(statusObj);
+        });
+
+        function updateCloudStatusUI(statusObj) {
+            const banner = document.getElementById('cloudStatusBanner');
+            const icon = document.getElementById('cloudStatusIcon');
+            const title = document.getElementById('cloudStatusTitle');
+            const text = document.getElementById('cloudStatusText');
+            const helpBtn = document.getElementById('cloudStatusHelpBtn');
+
+            if (!banner) return;
+
+            if (statusObj.status === 'connected') {
+                banner.style.background = 'rgba(0, 184, 148, 0.15)';
+                banner.style.borderColor = 'rgba(0, 184, 148, 0.4)';
+                icon.textContent = '🟢';
+                title.textContent = 'Sincronización en Tiempo Real Activa';
+                title.style.color = '#ffffff';
+                text.textContent = 'Conectado a Firebase Nube. Los cambios que hagas se verán al instante en todos los celulares.';
+                text.style.color = '#dcdcdc';
+                helpBtn.style.display = 'none';
+            } else if (statusObj.status === 'error') {
+                banner.style.background = 'rgba(214, 48, 49, 0.25)';
+                banner.style.borderColor = 'rgba(214, 48, 49, 0.6)';
+                icon.textContent = '🔴';
+                title.textContent = 'Atención: Sin Sincronización en Tiempo Real';
+                title.style.color = '#ff7777';
+                text.textContent = statusObj.message || 'Ocurrió un error al conectar con la nube de Firebase.';
+                text.style.color = '#ffaaaa';
+                helpBtn.style.display = 'inline-block';
+            } else if (statusObj.status === 'connecting') {
+                banner.style.background = 'rgba(255, 159, 67, 0.15)';
+                banner.style.borderColor = 'rgba(255, 159, 67, 0.4)';
+                icon.textContent = '🟡';
+                title.textContent = 'Conectando con la Nube...';
+                title.style.color = '#ffffff';
+                text.textContent = 'Estableciendo conexión en vivo con Firebase...';
+                text.style.color = '#dcdcdc';
+                helpBtn.style.display = 'none';
+            } else {
+                banner.style.background = 'rgba(120, 120, 120, 0.15)';
+                banner.style.borderColor = 'rgba(120, 120, 120, 0.3)';
+                icon.textContent = '⚪';
+                title.textContent = 'Modo Local (Sin Nube)';
+                title.style.color = '#ffffff';
+                text.textContent = statusObj.message || 'Los cambios sólo se guardarán en este dispositivo.';
+                text.style.color = '#cccccc';
+                helpBtn.style.display = 'none';
+            }
+        }
+
+        function openCloudHelpModal() {
+            document.getElementById('cloudHelpModal').style.display = 'flex';
+        }
+        function closeCloudHelpModal() {
+            document.getElementById('cloudHelpModal').style.display = 'none';
+        }
+
+        // Carga Inicial y Sincronización en Vivo en el Panel de Administración
         document.addEventListener('DOMContentLoaded', function() {
-            populateCategorySelects();
-            renderProducts();
+            ZenbaoStore.subscribeData(function(data) {
+                populateCategorySelects();
+                const activeTab = document.querySelector('.tab-btn.active');
+                if (activeTab && activeTab.getAttribute('onclick') && activeTab.getAttribute('onclick').includes('categoriesTab')) {
+                    renderCategories();
+                } else {
+                    renderProducts();
+                }
+            });
         });
 
         function populateCategorySelects() {
@@ -873,6 +996,11 @@
                 const card = document.createElement('div');
                 card.className = 'item-card';
 
+                if (prod.hidden) {
+                    card.style.opacity = '0.65';
+                    card.style.border = '1px dashed #ff7777';
+                }
+
                 const imgSrc = prod.image || 'img/categorias/LogoZenbaoB.png';
 
                 let subBadge = '';
@@ -886,6 +1014,8 @@
                     subBadge = `<span style="font-size:0.7rem; color:#00cec9; border:1px solid #00cec9; padding:1px 5px; border-radius:3px; margin-left:6px;">📍 ${label}</span>`;
                 }
 
+                const hiddenBadge = prod.hidden ? `<span style="font-size:0.7rem; color:#ff7777; border:1px solid #ff7777; padding:1px 5px; border-radius:3px; margin-left:6px; background: rgba(214, 48, 49, 0.25);">🙈 OCULTO (AGOTADO)</span>` : '';
+
                 card.innerHTML = `
                     <img src="${imgSrc}" class="item-thumb" alt="${prod.name}" onerror="this.src='img/categorias/LogoZenbaoB.png'">
                     <div class="item-info">
@@ -893,11 +1023,13 @@
                             ${prod.name} 
                             ${index === 0 ? '<span style="font-size:0.7rem; color:#ffd700; border:1px solid #ffd700; padding:1px 4px; border-radius:3px; margin-left:6px;">★ PRIMERO</span>' : ''}
                             ${subBadge}
+                            ${hiddenBadge}
                         </div>
                         <div class="item-price">${prod.price}</div>
                         <div class="item-desc">${prod.description || 'Sin descripción'}</div>
                     </div>
                     <div class="item-actions">
+                        <button onclick="toggleProdVisibility('${catId}', '${prod.id}')" class="btn-icon" title="${prod.hidden ? 'Volver a mostrar en el menú público' : 'Ocultar del menú público (Agotado)'}">${prod.hidden ? '🙈' : '👁️'}</button>
                         <button onclick="moveProd('${catId}', ${index}, -1)" class="btn-icon" title="Subir (poner antes)" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>▲</button>
                         <button onclick="moveProd('${catId}', ${index}, 1)" class="btn-icon" title="Bajar (poner después)" ${index === products.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>▼</button>
                         <button onclick="editProduct('${catId}', '${prod.id}')" class="btn-icon" title="Editar">✏️</button>
@@ -994,10 +1126,27 @@
             );
         }
 
+        // ALTERNAR VISIBILIDAD DE PLATILLO (OCULTAR / MOSTRAR CON EL OJO)
+        function toggleProdVisibility(catId, prodId) {
+            const isNowHidden = ZenbaoStore.toggleProductVisibility(catId, prodId);
+            renderProducts();
+            const products = ZenbaoStore.getProducts(catId);
+            const prod = products.find(p => p.id === prodId);
+            const prodName = prod ? prod.name : '';
+
+            if (isNowHidden) {
+                showCustomAlert(`El platillo "${prodName}" ahora está OCULTO en el menú público.\n\nLos clientes no lo verán en sus celulares hasta que vuelvas a presionar el ojo.`, 'Platillo Ocultado', '🙈');
+            } else {
+                showCustomAlert(`El platillo "${prodName}" vuelve a estar VISIBLE en el menú público.`, 'Platillo Visible', '👁️');
+            }
+        }
+
         // MODAL PRODUCTO
         function openProductModal() {
             document.getElementById('productForm').reset();
             document.getElementById('prodId').value = '';
+            const hiddenChk = document.getElementById('prodHidden');
+            if (hiddenChk) hiddenChk.checked = false;
             document.getElementById('imagePreviewBox').style.display = 'none';
             document.getElementById('productModalTitle').textContent = 'Agregar Nuevo Platillo';
             
@@ -1030,6 +1179,9 @@
             document.getElementById('prodDesc').value = prod.description || '';
             document.getElementById('prodImage').value = prod.image || '';
 
+            const hiddenChk = document.getElementById('prodHidden');
+            if (hiddenChk) hiddenChk.checked = !!prod.hidden;
+
             updateSubSectionField(prod.subSection);
 
             if (prod.image) {
@@ -1047,7 +1199,7 @@
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 try {
-                    const webpUrl = await ZenbaoStore.convertImageToWebP(file, 1000, 0.82);
+                    const webpUrl = await ZenbaoStore.convertImageToWebP(file, 550, 0.70);
                     document.getElementById('prodImage').value = webpUrl;
                     document.getElementById('imagePreview').src = webpUrl;
                     document.getElementById('imagePreviewBox').style.display = 'block';
@@ -1078,13 +1230,16 @@
                         finalPrice = ZenbaoStore.formatPrice(finalPrice);
                     }
 
+                    const hiddenChk = document.getElementById('prodHidden');
+
                     const prodData = {
                         id: document.getElementById('prodId').value || null,
                         name: prodName,
                         price: finalPrice,
                         description: document.getElementById('prodDesc').value.trim(),
                         image: document.getElementById('prodImage').value.trim(),
-                        subSection: subSecVal
+                        subSection: subSecVal,
+                        hidden: hiddenChk ? hiddenChk.checked : false
                     };
 
                     ZenbaoStore.saveProduct(catId, prodData);

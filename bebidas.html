@@ -230,7 +230,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             ZenbaoStore.subscribeData(function(data) {
-                const products = (data.products && data.products.bebidas) || [];
+                const products = ((data.products && data.products.bebidas) || []).filter(p => !p.hidden);
                 const refrescosList = document.getElementById('refrescosPriceList');
                 const jarrasList = document.getElementById('jarrasPriceList');
 

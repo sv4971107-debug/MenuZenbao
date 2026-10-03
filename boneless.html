@@ -324,7 +324,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             ZenbaoStore.subscribeData(function(data) {
-                const products = (data.products && data.products.boneless) || [];
+                const products = ((data.products && data.products.boneless) || []).filter(p => !p.hidden);
                 const bonelessList = document.getElementById('bonelessPriceList');
                 const saucesGrid = document.getElementById('saucesGrid');
                 const papasList = document.getElementById('papasPriceList');

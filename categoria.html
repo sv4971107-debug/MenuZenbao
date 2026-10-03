@@ -289,7 +289,7 @@
                 }
 
                 // Render Products
-                const products = (data.products && data.products[catId]) || [];
+                const products = ((data.products && data.products[catId]) || []).filter(p => !p.hidden);
                 container.innerHTML = '';
 
                 if (products.length === 0) {

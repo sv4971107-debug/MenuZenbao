@@ -78,7 +78,7 @@ let isFirebaseReady = false;
 
 function initFirebaseIfAvailable() {
     if (typeof firebase !== 'undefined' && typeof ZENBAO_FIREBASE_CONFIG !== 'undefined' && typeof USE_FIREBASE_CLOUD !== 'undefined' && USE_FIREBASE_CLOUD) {
-        if (!ZENBAO_FIREBASE_CONFIG.apiKey.includes("YOUR_API_KEY")) {
+        if (ZENBAO_FIREBASE_CONFIG.apiKey && !ZENBAO_FIREBASE_CONFIG.apiKey.includes("YOUR_API_KEY")) {
             try {
                 if (!firebase.apps.length) {
                     firebase.initializeApp(ZENBAO_FIREBASE_CONFIG);
@@ -96,6 +96,23 @@ function initFirebaseIfAvailable() {
 initFirebaseIfAvailable();
 
 const ZenbaoStore = {
+    currentStatus: { status: isFirebaseReady ? 'connecting' : 'offline', message: isFirebaseReady ? 'Conectando a la nube...' : 'Modo local (Sin Firebase)' },
+    statusListeners: [],
+
+    addStatusListener: function(fn) {
+        if (typeof fn === 'function') {
+            this.statusListeners.push(fn);
+            fn(this.currentStatus);
+        }
+    },
+
+    notifyStatus: function(status, message, error = null) {
+        this.currentStatus = { status, message, error, timestamp: new Date().toISOString() };
+        this.statusListeners.forEach(fn => {
+            try { fn(this.currentStatus); } catch(e) {}
+        });
+    },
+
     // Obtener todos los datos
     getData: function() {
         try {
@@ -133,18 +150,27 @@ const ZenbaoStore = {
 
         // Si Firebase está listo, suscribirse a cambios en vivo
         if (isFirebaseReady && firebaseDb) {
+            this.notifyStatus('connecting', 'Conectando con la nube de Firebase...');
             firebaseDb.collection('zenbao_menu').doc('main_data').onSnapshot(doc => {
                 if (doc.exists) {
                     const cloudData = doc.data();
                     localStorage.setItem(ZENBAO_STORAGE_KEY, JSON.stringify(cloudData));
                     callback(cloudData);
+                    this.notifyStatus('connected', 'Sincronizado en tiempo real con la nube');
                 } else {
                     // Si el documento en la nube aún no existe, crearlo con los datos por defecto
                     this.saveData(this.getData());
                 }
             }, err => {
                 console.warn("Error en la suscripción en vivo a la nube:", err);
+                let msg = err.message || 'Error de conexión a Firebase.';
+                if (err.code === 'permission-denied') {
+                    msg = 'Las reglas de seguridad de Firestore en Firebase expiraron o deniegan acceso.';
+                }
+                this.notifyStatus('error', msg, err);
             });
+        } else {
+            this.notifyStatus('offline', 'Modo local (Sin Firebase)');
         }
     },
 
@@ -158,12 +184,26 @@ const ZenbaoStore = {
 
         // Si Firebase está activo, enviar a la nube
         if (isFirebaseReady && firebaseDb) {
+            const dataString = JSON.stringify(data);
+            const sizeInBytes = new Blob([dataString]).size;
+            if (sizeInBytes > 950000) {
+                console.warn("⚠️ Los datos superan los 950KB. Se recomienda reducir el tamaño de las fotos.");
+            }
+
             firebaseDb.collection('zenbao_menu').doc('main_data').set(data)
                 .then(() => {
                     console.log("☁️ Guardado en la nube con éxito.");
+                    this.notifyStatus('connected', 'Cambios guardados y sincronizados en tiempo real');
                 })
                 .catch(err => {
                     console.error("Error al guardar en la nube:", err);
+                    let msg = err.message || 'Error al guardar en la nube';
+                    if (err.code === 'permission-denied') {
+                        msg = 'Error de permisos: Las reglas de Firestore en Firebase expiran por defecto a los 30 días.';
+                    } else if (msg.includes('exceeds maximum size')) {
+                        msg = 'Error de tamaño: Los platillos con foto superan el límite de 1MB por documento de Firestore.';
+                    }
+                    this.notifyStatus('error', msg, err);
                 });
         }
     },
@@ -401,11 +441,26 @@ const ZenbaoStore = {
         }
     },
 
+    toggleProductVisibility: function(catId, prodId) {
+        const data = this.getData();
+        if (data.products && data.products[catId]) {
+            const prod = data.products[catId].find(p => p.id === prodId);
+            if (prod) {
+                prod.hidden = !prod.hidden;
+                this.saveData(data);
+                const statusStr = prod.hidden ? 'ocultó (agotado)' : 'volvió a hacer visible';
+                this.pushHistoryRecord(`Se ${statusStr} el platillo: ${prod.name}`);
+                return prod.hidden;
+            }
+        }
+        return false;
+    },
+
     /**
      * CONVERSOR DE IMAGEN A WEBP EN EL NAVEGADOR
      * Recibe un archivo File (PNG, JPG, HEIC, etc.), lo redimensiona y devuelve un DataURL .webp comprimido
      */
-    convertImageToWebP: function(file, maxWidth = 1000, quality = 0.82) {
+    convertImageToWebP: function(file, maxWidth = 550, quality = 0.70) {
         return new Promise((resolve, reject) => {
             if (!file) return resolve('');
             const reader = new FileReader();
