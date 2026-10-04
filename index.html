@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <!-- Fuentes de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
     <style>
         /* RESET GENERAL */
         * {
@@ -20,10 +23,10 @@
         body {
             background-color: #000000;
             background-image: url('img/categorias/FondoPagina.jpg');
-            background-size: 100% auto;          
-            background-position: top center;     
-            background-repeat: repeat-y;     
-            background-attachment: scroll;      
+            background-size: 100% auto;
+            background-position: top center;
+            background-repeat: repeat-y;
+            background-attachment: scroll;
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
@@ -31,15 +34,16 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            cursor: pointer; /* Indica visualmente que toda la pantalla es cliqueable */
+            cursor: pointer;
+            /* Indica visualmente que toda la pantalla es cliqueable */
         }
 
         @media (max-width: 768px) {
             body {
-                background-size: contain; 
+                background-size: contain;
                 background-position: top center;
             }
-        }       
+        }
 
         /* CONTENEDOR PRINCIPAL */
         .welcome-container {
@@ -86,7 +90,8 @@
             display: inline-block;
             padding: 10px 20px;
             border: none;
-            background: transparent; /* Sin fondo negro */
+            background: transparent;
+            /* Sin fondo negro */
             color: #ffffff;
             font-family: 'Cinzel', serif;
             font-size: 1.65rem;
@@ -96,11 +101,11 @@
             text-transform: uppercase;
             transition: all 0.4s ease;
             cursor: pointer;
-            
+
             /* LUZ LED DIRECTAMENTE EN LAS LETRAS DEL TEXTO */
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-                         0 0 20px rgba(214, 48, 49, 0.8),
-                         0 0 35px rgba(214, 48, 49, 0.6);
+                0 0 20px rgba(214, 48, 49, 0.8),
+                0 0 35px rgba(214, 48, 49, 0.6);
         }
 
         /* EFECTO HOVER */
@@ -109,9 +114,9 @@
             transform: scale(1.08);
             /* Intensificación de luz neón en las letras al pasar el cursor */
             text-shadow: 0 0 12px #ffffff,
-                         0 0 25px #d63031,
-                         0 0 45px #d63031,
-                         0 0 60px #d63031;
+                0 0 25px #d63031,
+                0 0 45px #d63031,
+                0 0 60px #d63031;
         }
 
         /* BOTÓN DISCRETO ADMINISTRACIÓN (ESQUINA SUPERIOR DERECHA) */
@@ -148,6 +153,7 @@
                 filter: blur(12px);
                 transform: scale(0.96);
             }
+
             100% {
                 opacity: 1;
                 filter: blur(0);
@@ -160,15 +166,18 @@
             .logo-img {
                 width: 210px;
             }
+
             .logo-box {
                 margin-bottom: 25px;
             }
+
             .btn-menu {
                 font-size: 1.35rem;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- BOTÓN OCULTO/DISCRETO PARA ADMINISTRACIÓN -->
@@ -176,7 +185,7 @@
 
     <main class="welcome-container">
         <div class="welcome-content">
-            
+
             <div class="logo-box">
                 <img src="img/categorias/LogoZenbaoB.png" alt="Zenbao Logo" class="logo-img">
             </div>
@@ -188,15 +197,16 @@
 
     <script>
         // Evita que al hacer clic en el botón de admin se dispare la redirección global del body
-        document.getElementById('adminBtnHidden').addEventListener('click', function(e) {
+        document.getElementById('adminBtnHidden').addEventListener('click', function (e) {
             e.stopPropagation();
         });
 
         // Permite que al hacer clic en cualquier parte de la pantalla redirija a menu.html
-        document.body.addEventListener('click', function() {
+        document.body.addEventListener('click', function () {
             window.location.href = 'menu.html';
         });
     </script>
 
 </body>
+
 </html>

@@ -125,7 +125,7 @@ const ZenbaoStore = {
                     updated = true;
                 }
                 if (updated) {
-                    this.saveData(parsed);
+                    this.saveData(parsed, false);
                 }
                 if (this.getHistory().length === 0) {
                     this.pushHistoryRecord('Estado inicial del menú', parsed);
@@ -135,18 +135,22 @@ const ZenbaoStore = {
         } catch (e) {
             console.error('Error al leer de localStorage:', e);
         }
-        // Guardar default si no existe
-        this.saveData(DEFAULT_ZENBAO_DATA);
+        // Retornar defaults sin modificar la Nube en Firebase
+        const defaultData = JSON.parse(JSON.stringify(DEFAULT_ZENBAO_DATA));
+        try {
+            localStorage.setItem(ZENBAO_STORAGE_KEY, JSON.stringify(defaultData));
+        } catch (e) {}
         if (this.getHistory().length === 0) {
-            this.pushHistoryRecord('Estado inicial del menú', DEFAULT_ZENBAO_DATA);
+            this.pushHistoryRecord('Estado inicial del menú', defaultData);
         }
-        return JSON.parse(JSON.stringify(DEFAULT_ZENBAO_DATA));
+        return defaultData;
     },
 
     // Escuchar cambios en la nube en tiempo real (Sincronización en vivo)
     subscribeData: function(callback) {
-        // Ejecutar inmediatamente con datos locales
-        callback(this.getData());
+        // Ejecutar inmediatamente con datos locales para vista instantánea
+        const initialLocalData = this.getData();
+        callback(initialLocalData);
 
         // Si Firebase está listo, suscribirse a cambios en vivo
         if (isFirebaseReady && firebaseDb) {
@@ -154,12 +158,13 @@ const ZenbaoStore = {
             firebaseDb.collection('zenbao_menu').doc('main_data').onSnapshot(doc => {
                 if (doc.exists) {
                     const cloudData = doc.data();
-                    localStorage.setItem(ZENBAO_STORAGE_KEY, JSON.stringify(cloudData));
+                    // Guardar localmente SIN volver a subir a la nube
+                    this.saveData(cloudData, false);
                     callback(cloudData);
                     this.notifyStatus('connected', 'Sincronizado en tiempo real con la nube');
                 } else {
-                    // Si el documento en la nube aún no existe, crearlo con los datos por defecto
-                    this.saveData(this.getData());
+                    // Si el documento en la nube aún no existe en Firebase, crearlo con los datos por defecto
+                    this.saveData(initialLocalData, true);
                 }
             }, err => {
                 console.warn("Error en la suscripción en vivo a la nube:", err);
@@ -174,16 +179,16 @@ const ZenbaoStore = {
         }
     },
 
-    // Guardar todos los datos (Local + Nube Firebase)
-    saveData: function(data) {
+    // Guardar todos los datos (Local + opcionalmente Nube Firebase)
+    saveData: function(data, saveToCloud = true) {
         try {
             localStorage.setItem(ZENBAO_STORAGE_KEY, JSON.stringify(data));
         } catch (e) {
             console.error('Error al guardar en localStorage:', e);
         }
 
-        // Si Firebase está activo, enviar a la nube
-        if (isFirebaseReady && firebaseDb) {
+        // Si Firebase está activo y se solicita guardar en nube, enviar a Firestore
+        if (saveToCloud && isFirebaseReady && firebaseDb) {
             const dataString = JSON.stringify(data);
             const sizeInBytes = new Blob([dataString]).size;
             if (sizeInBytes > 950000) {

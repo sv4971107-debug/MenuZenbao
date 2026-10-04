@@ -592,6 +592,7 @@
             <h3 id="productModalTitle" class="modal-title">Agregar Nuevo Platillo</h3>
             <form id="productForm">
                 <input type="hidden" id="prodId">
+                <input type="hidden" id="prodImage">
                 
                 <div class="form-group">
                     <label class="form-label">Categoría</label>
@@ -608,13 +609,6 @@
                     <input type="text" id="prodName" class="form-input" placeholder="Ej. California Spicy Roll o Salsa BBQ" required>
                 </div>
 
-                <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="prodHidden" style="width: 20px; height: 20px; cursor: pointer; accent-color: #d63031;">
-                    <label for="prodHidden" class="form-label" style="margin-bottom: 0; cursor: pointer; font-size: 0.88rem; color: #ffd700;">
-                        🙈 Ocultar este platillo del menú público (Marcar como Agotado)
-                    </label>
-                </div>
-
                 <div class="form-group" id="priceGroup">
                     <label class="form-label">Precio</label>
                     <input type="text" id="prodPrice" class="form-input" placeholder="Ej. $169.00" onblur="if(this.value.trim() && this.value !== 'Incluida') this.value = ZenbaoStore.formatPrice(this.value);" required>
@@ -626,19 +620,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Foto del Platillo (Subir PNG / JPG)</label>
+                    <label class="form-label">Foto del Platillo (Subir Foto PNG / JPG)</label>
                     <input type="file" id="prodFileInput" accept="image/*" class="form-input" onchange="handleImageUpload(this)">
                     <div class="webp-badge">⚡ Auto-conversión a .WebP súper liviano activada</div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">O URL de la foto (opcional)</label>
-                    <input type="text" id="prodImage" class="form-input" placeholder="img/clasicos/ejemplo.jpg o https://...">
-                </div>
-
                 <div id="imagePreviewBox" class="preview-box" style="display: none;">
-                    <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 4px;">Vista previa comprimida:</p>
+                    <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 4px;">Foto seleccionada:</p>
                     <img id="imagePreview" src="" class="preview-img">
+                    <div style="margin-top: 6px;">
+                        <button type="button" onclick="removeProductPhoto()" style="background: rgba(214,48,49,0.2); border: 1px solid #d63031; color: #ff8888; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">
+                            🗑️ Quitar foto
+                        </button>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
@@ -655,6 +649,7 @@
             <h3 id="categoryModalTitle" class="modal-title">Agregar Categoría</h3>
             <form id="categoryForm">
                 <input type="hidden" id="catId">
+                <input type="hidden" id="catImage">
 
                 <div class="form-group">
                     <label class="form-label">Nombre de la Categoría</label>
@@ -667,9 +662,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Foto de Fondo (Subir o URL)</label>
+                    <label class="form-label">Foto de Fondo para la Categoría</label>
                     <input type="file" id="catFileInput" accept="image/*" class="form-input" onchange="handleCatImageUpload(this)">
-                    <input type="text" id="catImage" class="form-input" style="margin-top:6px;" placeholder="URL o ruta de imagen">
+                </div>
+
+                <div id="catImagePreviewBox" class="preview-box" style="display: none;">
+                    <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 4px;">Foto de fondo seleccionada:</p>
+                    <img id="catImagePreview" src="" class="preview-img">
+                    <div style="margin-top: 6px;">
+                        <button type="button" onclick="removeCatPhoto()" style="background: rgba(214,48,49,0.2); border: 1px solid #d63031; color: #ff8888; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">
+                            🗑️ Quitar foto
+                        </button>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
@@ -1143,16 +1147,20 @@ service cloud.firestore {
 
         // MODAL PRODUCTO
         function openProductModal() {
+            populateCategorySelects();
             document.getElementById('productForm').reset();
             document.getElementById('prodId').value = '';
-            const hiddenChk = document.getElementById('prodHidden');
-            if (hiddenChk) hiddenChk.checked = false;
+            document.getElementById('prodImage').value = '';
+            document.getElementById('imagePreview').src = '';
             document.getElementById('imagePreviewBox').style.display = 'none';
             document.getElementById('productModalTitle').textContent = 'Agregar Nuevo Platillo';
             
-            const currentCat = document.getElementById('categorySelect').value;
-            if (currentCat) {
-                document.getElementById('prodCategory').value = currentCat;
+            const currentCat = document.getElementById('categorySelect') ? document.getElementById('categorySelect').value : '';
+            const prodCatSelect = document.getElementById('prodCategory');
+            if (prodCatSelect && currentCat && Array.from(prodCatSelect.options).some(o => o.value === currentCat)) {
+                prodCatSelect.value = currentCat;
+            } else if (prodCatSelect && prodCatSelect.options.length > 0) {
+                prodCatSelect.selectedIndex = 0;
             }
             
             const subSectionSelect = document.getElementById('prodSubSection');
@@ -1167,6 +1175,7 @@ service cloud.firestore {
         }
 
         function editProduct(catId, prodId) {
+            populateCategorySelects();
             const products = ZenbaoStore.getProducts(catId);
             const prod = products.find(p => p.id === prodId);
             if (!prod) return;
@@ -1179,12 +1188,9 @@ service cloud.firestore {
             document.getElementById('prodDesc').value = prod.description || '';
             document.getElementById('prodImage').value = prod.image || '';
 
-            const hiddenChk = document.getElementById('prodHidden');
-            if (hiddenChk) hiddenChk.checked = !!prod.hidden;
-
             updateSubSectionField(prod.subSection);
 
-            if (prod.image) {
+            if (prod.image && prod.image.trim() !== '') {
                 document.getElementById('imagePreview').src = prod.image;
                 document.getElementById('imagePreviewBox').style.display = 'block';
             } else {
@@ -1192,6 +1198,13 @@ service cloud.firestore {
             }
 
             document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function removeProductPhoto() {
+            document.getElementById('prodImage').value = '';
+            document.getElementById('prodFileInput').value = '';
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('imagePreviewBox').style.display = 'none';
         }
 
         // CONVERSIÓN WEBP AL SUBIR IMAGEN DE PRODUCTO
@@ -1209,49 +1222,64 @@ service cloud.firestore {
             }
         }
 
-        // SUBMIT FORMULARIO PRODUCTO CON CONFIRMACIÓN Y NOTIFICACIÓN
+        // SUBMIT FORMULARIO PRODUCTO CON CONFIRMACIÓN Y NOTIFICACIÓN CLARA
         document.getElementById('productForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const prodName = document.getElementById('prodName').value.trim();
             const isEditing = !!document.getElementById('prodId').value;
-            const actionMsg = isEditing ? `¿Deseas guardar los cambios realizados en el platillo "${prodName}"?` : `¿Confirmas que deseas agregar el platillo "${prodName}" al menú?`;
+            const catId = document.getElementById('prodCategory').value;
 
-            showCustomConfirm(
-                actionMsg,
-                function() {
-                    const catId = document.getElementById('prodCategory').value;
-                    const subSectionGroup = document.getElementById('subSectionGroup');
-                    const subSecVal = (subSectionGroup && subSectionGroup.style.display !== 'none') ? document.getElementById('prodSubSection').value : null;
+            if (!catId) {
+                showCustomAlert('Por favor selecciona una categoría válida.', 'Categoría Requerida', '⚠️');
+                return;
+            }
 
-                    let finalPrice = document.getElementById('prodPrice').value.trim();
-                    if (catId === 'boneless' && subSecVal === 'sauce') {
-                        finalPrice = 'Incluida';
-                    } else {
-                        finalPrice = ZenbaoStore.formatPrice(finalPrice);
-                    }
+            const subSectionGroup = document.getElementById('subSectionGroup');
+            const subSecVal = (subSectionGroup && subSectionGroup.style.display !== 'none') ? document.getElementById('prodSubSection').value : null;
 
-                    const hiddenChk = document.getElementById('prodHidden');
+            let finalPrice = document.getElementById('prodPrice').value.trim();
+            if (catId === 'boneless' && subSecVal === 'sauce') {
+                finalPrice = 'Incluida';
+            } else {
+                finalPrice = ZenbaoStore.formatPrice(finalPrice);
+            }
 
-                    const prodData = {
-                        id: document.getElementById('prodId').value || null,
-                        name: prodName,
-                        price: finalPrice,
-                        description: document.getElementById('prodDesc').value.trim(),
-                        image: document.getElementById('prodImage').value.trim(),
-                        subSection: subSecVal,
-                        hidden: hiddenChk ? hiddenChk.checked : false
-                    };
+            // Preservar estado oculto si existía al editar; al crear platillo nuevo estará visible
+            let isHidden = false;
+            if (isEditing) {
+                const existingProd = ZenbaoStore.getProducts(catId).find(p => p.id === document.getElementById('prodId').value);
+                if (existingProd && existingProd.hidden) isHidden = true;
+            }
 
-                    ZenbaoStore.saveProduct(catId, prodData);
-                    closeProductModal();
-                    renderProducts();
+            const prodData = {
+                id: document.getElementById('prodId').value || null,
+                name: prodName,
+                price: finalPrice,
+                description: document.getElementById('prodDesc').value.trim(),
+                image: document.getElementById('prodImage').value.trim(),
+                subSection: subSecVal,
+                hidden: isHidden
+            };
 
-                    showCustomAlert(`El platillo "${prodName}" ha sido guardado exitosamente en el menú.`, 'Platillo Guardado', '✅');
-                },
-                isEditing ? 'Guardar Cambios' : 'Agregar Platillo',
-                '🍣',
-                'Sí, Guardar',
-                'Cancelar'
+            ZenbaoStore.saveProduct(catId, prodData);
+            closeProductModal();
+
+            // Sincronizar el filtro visual de la lista con la categoría donde se guardó el platillo
+            const categorySelect = document.getElementById('categorySelect');
+            if (categorySelect) {
+                categorySelect.value = catId;
+            }
+            renderProducts();
+
+            // Nombre legible de la categoría para el cuadro de notificación
+            const categories = ZenbaoStore.getCategories();
+            const categoryObj = categories.find(c => c.id === catId);
+            const catNameStr = categoryObj ? categoryObj.name : 'el menú';
+
+            showCustomAlert(
+                `El platillo "${prodName}" fue ${isEditing ? 'actualizado' : 'agregado'} con éxito en la categoría "${catNameStr}" y ya está disponible en la página pública.`,
+                '¡Platillo Guardado Con Éxito!',
+                '✅'
             );
         });
 
@@ -1308,6 +1336,8 @@ service cloud.firestore {
         function openCategoryModal() {
             document.getElementById('categoryForm').reset();
             document.getElementById('catId').value = '';
+            document.getElementById('catImage').value = '';
+            document.getElementById('catImagePreviewBox').style.display = 'none';
             document.getElementById('categoryModalTitle').textContent = 'Agregar Categoría';
             document.getElementById('categoryModal').style.display = 'flex';
         }
@@ -1327,21 +1357,37 @@ service cloud.firestore {
             document.getElementById('catSubtitle').value = cat.subtitle || '';
             document.getElementById('catImage').value = cat.image || '';
 
+            if (cat.image && cat.image.trim() !== '') {
+                document.getElementById('catImagePreview').src = cat.image;
+                document.getElementById('catImagePreviewBox').style.display = 'block';
+            } else {
+                document.getElementById('catImagePreviewBox').style.display = 'none';
+            }
+
             document.getElementById('categoryModal').style.display = 'flex';
+        }
+
+        function removeCatPhoto() {
+            document.getElementById('catImage').value = '';
+            document.getElementById('catFileInput').value = '';
+            document.getElementById('catImagePreviewBox').style.display = 'none';
         }
 
         async function handleCatImageUpload(input) {
             if (input.files && input.files[0]) {
                 const webpUrl = await ZenbaoStore.convertImageToWebP(input.files[0], 1000, 0.82);
                 document.getElementById('catImage').value = webpUrl;
+                document.getElementById('catImagePreview').src = webpUrl;
+                document.getElementById('catImagePreviewBox').style.display = 'block';
             }
         }
 
         document.getElementById('categoryForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const catName = document.getElementById('catName').value.trim();
             const catData = {
                 id: document.getElementById('catId').value || null,
-                name: document.getElementById('catName').value.trim(),
+                name: catName,
                 subtitle: document.getElementById('catSubtitle').value.trim(),
                 image: document.getElementById('catImage').value.trim()
             };
@@ -1349,7 +1395,7 @@ service cloud.firestore {
             ZenbaoStore.saveCategory(catData);
             closeCategoryModal();
             renderCategories();
-            showCustomAlert('La categoría se guardó exitosamente.', 'Categoría Guardada', '✅');
+            showCustomAlert(`La categoría "${catName}" se guardó exitosamente y se actualizó en la nube.`, 'Categoría Guardada', '✅');
         });
 
         // RESTABLECER DATOS
