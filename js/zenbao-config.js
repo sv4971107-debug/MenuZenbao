@@ -1,22 +1,16 @@
 /**
- * ZENBAO - Configuración de Firebase en la Nube
- * 
- * Instrucciones:
- * 1. Ve a https://console.firebase.google.com/ (Es 100% Gratis)
- * 2. Crea un proyecto llamado "Zenbao Menu"
- * 3. En la sección "Firestore Database", crea una base de datos en Modo Prueba (Test Mode).
- * 4. Copia las credenciales de tu app Web de Firebase y pégalas a continuación:
+ * ZENBAO - Configuración de Base de Datos en la Nube
+ * Proveedor activo: Supabase (100% Gratis, sin expiración de reglas)
  */
 
-const ZENBAO_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBy00_8NE5POaumeCaKripnM6LyYr3YzRs",
-    authDomain: "zenbao-menu.firebaseapp.com",
-    projectId: "zenbao-menu",
-    storageBucket: "zenbao-menu.firebasestorage.app",
-    messagingSenderId: "149522437626",
-    appId: "1:149522437626:web:ba2ca70957ecb876d38043",
-    measurementId: "G-CW0YHEXHTV"
+// Proveedor de nube activo: 'supabase'
+const CLOUD_PROVIDER = 'supabase'; 
+
+// CONFIGURACIÓN DE SUPABASE
+const ZENBAO_SUPABASE_CONFIG = {
+    url: "https://mhvgydbjitdjefuawgok.supabase.co",
+    anonKey: "sb_publishable_etWT5n4xS_fgtwilo31-TA_x07XvwUO"
 };
 
-// Variable para activar o desactivar la nube (Nube conectada)
-const USE_FIREBASE_CLOUD = true;
+// Activar o desactivar conexión con la nube (true = sincronizado, false = solo modo local)
+const USE_CLOUD_SYNC = true;

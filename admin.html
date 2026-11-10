@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenbao - Panel de Control</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -18,10 +21,10 @@
         body {
             background-color: #000000;
             background-image: url('img/categorias/FondoPagina.jpg');
-            background-size: cover;          
-            background-position: center;     
-            background-repeat: no-repeat;     
-            background-attachment: fixed;      
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
@@ -319,7 +322,9 @@
             letter-spacing: 1px;
         }
 
-        .form-input, .form-textarea, .form-select {
+        .form-input,
+        .form-textarea,
+        .form-select {
             width: 100%;
             padding: 10px 14px;
             background: rgba(0, 0, 0, 0.7);
@@ -331,7 +336,9 @@
             outline: none;
         }
 
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
             border-color: #d63031;
         }
 
@@ -488,18 +495,22 @@
                 gap: 10px;
                 padding: 12px 16px;
             }
+
             .header-actions {
                 width: 100%;
                 justify-content: center;
                 flex-wrap: wrap;
             }
+
             .modal-content {
                 padding: 22px 16px;
             }
+
             .item-card {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .item-actions {
                 width: 100%;
                 justify-content: flex-end;
@@ -508,6 +519,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- HEADER DE CONTROL -->
@@ -522,17 +534,22 @@
     </header>
 
     <main class="admin-container">
-        
+
         <!-- BANNER DE ESTADO DE NUBE / TIEMPO REAL -->
-        <div id="cloudStatusBanner" style="margin-bottom: 22px; padding: 14px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; background: rgba(0, 184, 148, 0.12); border: 1px solid rgba(0, 184, 148, 0.3); color: #55efc4; transition: all 0.3s ease;">
+        <div id="cloudStatusBanner"
+            style="margin-bottom: 22px; padding: 14px 18px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; background: rgba(0, 184, 148, 0.12); border: 1px solid rgba(0, 184, 148, 0.3); color: #55efc4; transition: all 0.3s ease;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span id="cloudStatusIcon" style="font-size: 1.3rem;">🟢</span>
                 <div>
-                    <strong id="cloudStatusTitle" style="display: block; font-size: 0.95rem; color: #ffffff;">Sincronización en Tiempo Real Activa</strong>
-                    <span id="cloudStatusText" style="font-size: 0.82rem; opacity: 0.9; color: #dcdcdc;">Conectado a Firebase Nube. Los cambios que hagas se verán al instante en todos los celulares.</span>
+                    <strong id="cloudStatusTitle"
+                        style="display: block; font-size: 0.95rem; color: #ffffff;">Sincronización en Tiempo Real
+                        Activa</strong>
+                    <span id="cloudStatusText" style="font-size: 0.82rem; opacity: 0.9; color: #dcdcdc;">Conectado a
+                        Supabase Nube. Los cambios que hagas se verán al instante en todos los celulares.</span>
                 </div>
             </div>
-            <button id="cloudStatusHelpBtn" onclick="openCloudHelpModal()" style="display: none; background: #d63031; border: none; color: #fff; padding: 7px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+            <button id="cloudStatusHelpBtn" onclick="openCloudHelpModal()"
+                style="display: none; background: #d63031; border: none; color: #fff; padding: 7px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
                 🔧 ¿Cómo solucionarlo?
             </button>
         </div>
@@ -548,7 +565,8 @@
             <div class="section-header">
                 <div>
                     <h2 class="section-title">Gestión de Platillos</h2>
-                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 4px;">Selecciona la categoría para agregar, editar o reordenar platillos.</p>
+                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 4px;">Selecciona la categoría para agregar,
+                        editar o reordenar platillos.</p>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <select id="categorySelect" class="category-filter" onchange="renderProducts()">
@@ -568,7 +586,8 @@
             <div class="section-header">
                 <div>
                     <h2 class="section-title">Categorías de la Carta</h2>
-                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 4px;">Puedes cambiar el orden o añadir nuevas secciones al menú.</p>
+                    <p style="font-size: 0.85rem; color: #aaa; margin-top: 4px;">Puedes cambiar el orden o añadir nuevas
+                        secciones al menú.</p>
                 </div>
                 <button class="btn-primary" onclick="openCategoryModal()">+ Nueva Categoría</button>
             </div>
@@ -579,8 +598,10 @@
         </div>
 
         <!-- BOTÓN RESTABLECER DATOS -->
-        <div style="margin-top: 40px; text-align: center; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 25px;">
-            <button onclick="resetDataConfirm()" style="background: transparent; border: 1px dashed #d63031; color: #ff7777; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;">
+        <div
+            style="margin-top: 40px; text-align: center; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 25px;">
+            <button onclick="resetDataConfirm()"
+                style="background: transparent; border: 1px dashed #d63031; color: #ff7777; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;">
                 🔄 Restablecer Menú a la Configuración Original
             </button>
         </div>
@@ -593,35 +614,41 @@
             <form id="productForm">
                 <input type="hidden" id="prodId">
                 <input type="hidden" id="prodImage">
-                
+
                 <div class="form-group">
                     <label class="form-label">Categoría</label>
                     <select id="prodCategory" class="form-select" onchange="updateSubSectionField()" required></select>
                 </div>
 
                 <div class="form-group" id="subSectionGroup" style="display: none;">
-                    <label class="form-label" id="subSectionLabel">¿En qué recuadro deseas mostrar este platillo?</label>
+                    <label class="form-label" id="subSectionLabel">¿En qué recuadro deseas mostrar este
+                        platillo?</label>
                     <select id="prodSubSection" class="form-select" onchange="updateSubSectionField()"></select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Nombre del Platillo / Sushi / Salsa</label>
-                    <input type="text" id="prodName" class="form-input" placeholder="Ej. California Spicy Roll o Salsa BBQ" required>
+                    <input type="text" id="prodName" class="form-input"
+                        placeholder="Ej. California Spicy Roll o Salsa BBQ" required>
                 </div>
 
                 <div class="form-group" id="priceGroup">
                     <label class="form-label">Precio</label>
-                    <input type="text" id="prodPrice" class="form-input" placeholder="Ej. $169.00" onblur="if(this.value.trim() && this.value !== 'Incluida') this.value = ZenbaoStore.formatPrice(this.value);" required>
+                    <input type="text" id="prodPrice" class="form-input" placeholder="Ej. $169.00"
+                        onblur="if(this.value.trim() && this.value !== 'Incluida') this.value = ZenbaoStore.formatPrice(this.value);"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Descripción / Ingredientes</label>
-                    <textarea id="prodDesc" class="form-textarea" placeholder="250grs de arroz, aguacate, queso philadelphia..."></textarea>
+                    <textarea id="prodDesc" class="form-textarea"
+                        placeholder="250grs de arroz, aguacate, queso philadelphia..."></textarea>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Foto del Platillo (Subir Foto PNG / JPG)</label>
-                    <input type="file" id="prodFileInput" accept="image/*" class="form-input" onchange="handleImageUpload(this)">
+                    <input type="file" id="prodFileInput" accept="image/*" class="form-input"
+                        onchange="handleImageUpload(this)">
                     <div class="webp-badge">⚡ Auto-conversión a .WebP súper liviano activada</div>
                 </div>
 
@@ -629,7 +656,8 @@
                     <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 4px;">Foto seleccionada:</p>
                     <img id="imagePreview" src="" class="preview-img">
                     <div style="margin-top: 6px;">
-                        <button type="button" onclick="removeProductPhoto()" style="background: rgba(214,48,49,0.2); border: 1px solid #d63031; color: #ff8888; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">
+                        <button type="button" onclick="removeProductPhoto()"
+                            style="background: rgba(214,48,49,0.2); border: 1px solid #d63031; color: #ff8888; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">
                             🗑️ Quitar foto
                         </button>
                     </div>
@@ -663,14 +691,16 @@
 
                 <div class="form-group">
                     <label class="form-label">Foto de Fondo para la Categoría</label>
-                    <input type="file" id="catFileInput" accept="image/*" class="form-input" onchange="handleCatImageUpload(this)">
+                    <input type="file" id="catFileInput" accept="image/*" class="form-input"
+                        onchange="handleCatImageUpload(this)">
                 </div>
 
                 <div id="catImagePreviewBox" class="preview-box" style="display: none;">
                     <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 4px;">Foto de fondo seleccionada:</p>
                     <img id="catImagePreview" src="" class="preview-img">
                     <div style="margin-top: 6px;">
-                        <button type="button" onclick="removeCatPhoto()" style="background: rgba(214,48,49,0.2); border: 1px solid #d63031; color: #ff8888; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">
+                        <button type="button" onclick="removeCatPhoto()"
+                            style="background: rgba(214,48,49,0.2); border: 1px solid #d63031; color: #ff8888; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">
                             🗑️ Quitar foto
                         </button>
                     </div>
@@ -697,8 +727,12 @@
                     <label class="form-label">Nueva Contraseña</label>
                     <div class="password-wrapper">
                         <input type="password" id="newPassword" class="form-input" required>
-                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('newPassword', this)" aria-label="Mostrar contraseña" title="Mostrar contraseña">
-                            <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <button type="button" class="toggle-password"
+                            onclick="togglePasswordVisibility('newPassword', this)" aria-label="Mostrar contraseña"
+                            title="Mostrar contraseña">
+                            <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
@@ -716,14 +750,19 @@
     <!-- MODAL HISTORIAL DE EDICIONES -->
     <div id="historyModal" class="modal">
         <div class="modal-content" style="max-width: 650px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-bottom: 12px; margin-bottom: 15px;">
-                <h3 class="modal-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">📜 Historial de Ediciones</h3>
-                <button type="button" onclick="clearHistoryConfirm()" style="background: rgba(214, 48, 49, 0.2); border: 1px solid #d63031; color: #ff8888; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; font-weight: 600;">Limpiar Historial</button>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-bottom: 12px; margin-bottom: 15px;">
+                <h3 class="modal-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">📜 Historial
+                    de Ediciones</h3>
+                <button type="button" onclick="clearHistoryConfirm()"
+                    style="background: rgba(214, 48, 49, 0.2); border: 1px solid #d63031; color: #ff8888; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; font-weight: 600;">Limpiar
+                    Historial</button>
             </div>
             <p style="font-size: 0.84rem; color: #aaa; margin-bottom: 16px;">
-                Registro con fecha y hora de todos los cambios realizados. Puedes restaurar el menú a cualquiera de estas versiones en cualquier momento.
+                Registro con fecha y hora de todos los cambios realizados. Puedes restaurar el menú a cualquiera de
+                estas versiones en cualquier momento.
             </p>
-            
+
             <div id="historyList" style="max-height: 380px; overflow-y: auto; padding-right: 4px;">
                 <!-- Se renderiza dinámicamente con JS -->
             </div>
@@ -736,65 +775,92 @@
 
     <!-- MODAL ALERTA PERSONALIZADA (REEMPLAZA NATIVE ALERT) -->
     <div id="customAlertModal" class="modal" style="z-index: 3000;">
-        <div class="modal-content" style="max-width: 420px; text-align: center; padding: 25px 20px; background: rgba(22, 22, 22, 0.98); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+        <div class="modal-content"
+            style="max-width: 420px; text-align: center; padding: 25px 20px; background: rgba(22, 22, 22, 0.98); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
             <div id="customAlertIcon" style="font-size: 2.8rem; margin-bottom: 10px;">✅</div>
-            <h3 id="customAlertTitle" class="modal-title" style="border-bottom: none; margin-bottom: 8px; font-size: 1.3rem; font-family: 'Cinzel', serif;">Notificación</h3>
-            <p id="customAlertMessage" style="font-size: 0.92rem; color: #dddddd; margin-bottom: 24px; line-height: 1.5; white-space: pre-line;"></p>
-            <button type="button" id="customAlertBtn" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.95rem;">Aceptar</button>
+            <h3 id="customAlertTitle" class="modal-title"
+                style="border-bottom: none; margin-bottom: 8px; font-size: 1.3rem; font-family: 'Cinzel', serif;">
+                Notificación</h3>
+            <p id="customAlertMessage"
+                style="font-size: 0.92rem; color: #dddddd; margin-bottom: 24px; line-height: 1.5; white-space: pre-line;">
+            </p>
+            <button type="button" id="customAlertBtn" class="btn-primary"
+                style="width: 100%; justify-content: center; padding: 10px; font-size: 0.95rem;">Aceptar</button>
         </div>
     </div>
 
     <!-- MODAL CONFIRMACIÓN PERSONALIZADA (REEMPLAZA NATIVE CONFIRM) -->
     <div id="customConfirmModal" class="modal" style="z-index: 3000;">
-        <div class="modal-content" style="max-width: 440px; text-align: center; padding: 25px 20px; background: rgba(22, 22, 22, 0.98); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
+        <div class="modal-content"
+            style="max-width: 440px; text-align: center; padding: 25px 20px; background: rgba(22, 22, 22, 0.98); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.9);">
             <div id="customConfirmIcon" style="font-size: 2.8rem; margin-bottom: 10px;">⚠️</div>
-            <h3 id="customConfirmTitle" class="modal-title" style="border-bottom: none; margin-bottom: 8px; font-size: 1.3rem; font-family: 'Cinzel', serif;">Confirmación</h3>
-            <p id="customConfirmMessage" style="font-size: 0.92rem; color: #dddddd; margin-bottom: 24px; line-height: 1.5; white-space: pre-line;"></p>
+            <h3 id="customConfirmTitle" class="modal-title"
+                style="border-bottom: none; margin-bottom: 8px; font-size: 1.3rem; font-family: 'Cinzel', serif;">
+                Confirmación</h3>
+            <p id="customConfirmMessage"
+                style="font-size: 0.92rem; color: #dddddd; margin-bottom: 24px; line-height: 1.5; white-space: pre-line;">
+            </p>
             <div style="display: flex; gap: 12px; justify-content: center;">
-                <button type="button" id="customConfirmCancelBtn" class="btn-header" style="flex: 1; padding: 10px; text-align: center; justify-content: center; font-size: 0.9rem;">Cancelar</button>
-                <button type="button" id="customConfirmOkBtn" class="btn-primary" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.9rem;">Confirmar</button>
+                <button type="button" id="customConfirmCancelBtn" class="btn-header"
+                    style="flex: 1; padding: 10px; text-align: center; justify-content: center; font-size: 0.9rem;">Cancelar</button>
+                <button type="button" id="customConfirmOkBtn" class="btn-primary"
+                    style="flex: 1; justify-content: center; padding: 10px; font-size: 0.9rem;">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE AYUDA DE NUBE / REGLAS DE FIREBASE -->
+    <!-- MODAL DE AYUDA DE NUBE / SUPABASE -->
     <div id="cloudHelpModal" class="modal" style="z-index: 2500;">
         <div class="modal-content" style="max-width: 580px; text-align: left;">
-            <h3 class="modal-title" style="color: #ff7777; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px;">☁️ Guía: Activar Sincronización en la Nube</h3>
-            <div style="font-size: 0.88rem; color: #dddddd; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; margin-top: 15px;">
+            <h3 class="modal-title"
+                style="color: #55efc4; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px;">⚡ Guía:
+                Sincronización con Supabase</h3>
+            <div
+                style="font-size: 0.88rem; color: #dddddd; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; margin-top: 15px;">
                 <p>
-                    Si los cambios no se reflejan en tiempo real en otros celulares, se debe a que <strong>las Reglas de Seguridad de Firestore en Firebase expiran por defecto</strong> a los 30 días si creaste el proyecto en Modo Prueba.
+                    Tu sistema está configurado y sincronizado con <strong>Supabase Nube</strong>, lo que permite guardar cambios en tiempo real sin límites de 30 días ni expiración de reglas.
                 </p>
-                <div style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 8px; border-left: 4px solid #ffd700;">
-                    <strong style="color: #ffd700;">Pasos sencillos para corregirlo (1 minuto):</strong>
-                    <ol style="margin-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
-                        <li>Entra a la consola de Firebase: <a href="https://console.firebase.google.com/" target="_blank" style="color: #55efc4; font-weight: 600; text-decoration: underline;">console.firebase.google.com</a></li>
-                        <li>Abre tu proyecto <strong>Zenbao Menu</strong> y haz clic en <strong>Firestore Database</strong> en el menú izquierdo.</li>
-                        <li>Haz clic en la pestaña <strong>Reglas (Rules)</strong> arriba.</li>
-                        <li>Reemplaza todo el código existente por este (permite lectura y escritura):
-                            <pre style="background: #111; padding: 10px; border-radius: 6px; color: #55efc4; font-size: 0.82rem; margin-top: 6px; overflow-x: auto; border: 1px solid rgba(255,255,255,0.1);">
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}</pre>
-                        </li>
-                        <li>Haz clic en el botón azul <strong>Publicar (Publish)</strong> arriba a la derecha. ¡Y listo!</li>
-                    </ol>
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 14px; border-radius: 8px; border-left: 4px solid #55efc4;">
+                    <strong style="color: #55efc4;">Estructura de la base de datos en Supabase:</strong>
+                    <p style="margin-top: 6px; font-size: 0.84rem; color: #ccc;">
+                        Si alguna vez necesitas revisar o crear la tabla en el <strong>SQL Editor</strong> de Supabase:
+                    </p>
+                    <div style="position: relative; margin-top: 8px;">
+                        <pre id="supabaseSqlCode"
+                            style="background: #111; padding: 12px; padding-top: 36px; border-radius: 6px; color: #55efc4; font-size: 0.82rem; overflow-x: auto; border: 1px solid rgba(255,255,255,0.1); font-family: monospace; line-height: 1.4;">-- 1. Crear tabla zenbao_menu
+create table if not exists public.zenbao_menu (
+    id text primary key,
+    data jsonb,
+    updated_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 2. Habilitar seguridad de nivel de fila (RLS)
+alter table public.zenbao_menu enable row level security;
+
+-- 3. Permitir lectura y escritura pública
+create policy "Acceso total zenbao_menu"
+on public.zenbao_menu
+for all using (true) with check (true);
+
+-- 4. Habilitar tiempo real
+alter publication supabase_realtime add table zenbao_menu;</pre>
+                        <button type="button" onclick="copySupabaseSQL()"
+                            style="position: absolute; top: 8px; right: 8px; background: rgba(85, 239, 196, 0.15); border: 1px solid #55efc4; color: #55efc4; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 600;">
+                            📋 Copiar SQL
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="modal-actions" style="margin-top: 20px;">
-                <button type="button" class="btn-primary" style="width: 100%; justify-content: center;" onclick="closeCloudHelpModal()">Entendido, ya lo revisé</button>
+                <button type="button" class="btn-primary" style="width: 100%; justify-content: center;"
+                    onclick="closeCloudHelpModal()">Entendido, cerrar</button>
             </div>
         </div>
     </div>
 
-    <!-- Cargar Firebase SDK + Configuración + Almacén Zenbao -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <!-- Cargar Supabase SDK + Configuración + Almacén Zenbao -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/zenbao-config.js"></script>
     <script src="js/zenbao-store.js"></script>
 
@@ -804,13 +870,13 @@ service cloud.firestore {
             document.getElementById('customAlertIcon').textContent = icon;
             document.getElementById('customAlertTitle').textContent = title;
             document.getElementById('customAlertMessage').textContent = message;
-            
+
             const btn = document.getElementById('customAlertBtn');
-            btn.onclick = function() {
+            btn.onclick = function () {
                 document.getElementById('customAlertModal').style.display = 'none';
                 if (typeof onOk === 'function') onOk();
             };
-            
+
             document.getElementById('customAlertModal').style.display = 'flex';
         }
 
@@ -819,19 +885,19 @@ service cloud.firestore {
             document.getElementById('customConfirmIcon').textContent = icon;
             document.getElementById('customConfirmTitle').textContent = title;
             document.getElementById('customConfirmMessage').textContent = message;
-            
+
             const okBtn = document.getElementById('customConfirmOkBtn');
             const cancelBtn = document.getElementById('customConfirmCancelBtn');
 
             okBtn.textContent = confirmBtnText;
             cancelBtn.textContent = cancelBtnText;
 
-            okBtn.onclick = function() {
+            okBtn.onclick = function () {
                 document.getElementById('customConfirmModal').style.display = 'none';
                 if (typeof onConfirm === 'function') onConfirm();
             };
 
-            cancelBtn.onclick = function() {
+            cancelBtn.onclick = function () {
                 document.getElementById('customConfirmModal').style.display = 'none';
             };
 
@@ -862,8 +928,8 @@ service cloud.firestore {
             }
         }
 
-        // Escuchar cambios de estado de la nube de Firebase
-        ZenbaoStore.addStatusListener(function(statusObj) {
+        // Escuchar cambios de estado de la nube de Supabase
+        ZenbaoStore.addStatusListener(function (statusObj) {
             updateCloudStatusUI(statusObj);
         });
 
@@ -882,7 +948,7 @@ service cloud.firestore {
                 icon.textContent = '🟢';
                 title.textContent = 'Sincronización en Tiempo Real Activa';
                 title.style.color = '#ffffff';
-                text.textContent = 'Conectado a Firebase Nube. Los cambios que hagas se verán al instante en todos los celulares.';
+                text.textContent = statusObj.message || 'Conectado a Supabase Nube. Los cambios que hagas se verán al instante en todos los celulares.';
                 text.style.color = '#dcdcdc';
                 helpBtn.style.display = 'none';
             } else if (statusObj.status === 'error') {
@@ -891,7 +957,7 @@ service cloud.firestore {
                 icon.textContent = '🔴';
                 title.textContent = 'Atención: Sin Sincronización en Tiempo Real';
                 title.style.color = '#ff7777';
-                text.textContent = statusObj.message || 'Ocurrió un error al conectar con la nube de Firebase.';
+                text.textContent = statusObj.message || 'Ocurrió un error al conectar con la nube de Supabase.';
                 text.style.color = '#ffaaaa';
                 helpBtn.style.display = 'inline-block';
             } else if (statusObj.status === 'connecting') {
@@ -900,7 +966,7 @@ service cloud.firestore {
                 icon.textContent = '🟡';
                 title.textContent = 'Conectando con la Nube...';
                 title.style.color = '#ffffff';
-                text.textContent = 'Estableciendo conexión en vivo con Firebase...';
+                text.textContent = 'Estableciendo conexión en vivo con Supabase...';
                 text.style.color = '#dcdcdc';
                 helpBtn.style.display = 'none';
             } else {
@@ -922,9 +988,38 @@ service cloud.firestore {
             document.getElementById('cloudHelpModal').style.display = 'none';
         }
 
+        function copySupabaseSQL() {
+            const sql = `-- 1. Crear tabla zenbao_menu
+create table if not exists public.zenbao_menu (
+    id text primary key,
+    data jsonb,
+    updated_at timestamp with time zone default timezone('utc'::text, now())
+);
+
+-- 2. Habilitar seguridad de nivel de fila (RLS)
+alter table public.zenbao_menu enable row level security;
+
+-- 3. Permitir lectura y escritura pública
+create policy "Acceso total zenbao_menu"
+on public.zenbao_menu
+for all using (true) with check (true);
+
+-- 4. Habilitar tiempo real
+alter publication supabase_realtime add table zenbao_menu;`;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(sql).then(() => {
+                    showCustomAlert('¡Código SQL copiado al portapapeles! Puedes pegarlo en el SQL Editor de tu proyecto en Supabase.', 'SQL Copiado', '📋');
+                }).catch(() => {
+                    showCustomAlert('Por favor selecciona y copia el texto del recuadro manualmente.', 'Aviso', 'ℹ️');
+                });
+            } else {
+                showCustomAlert('Por favor selecciona y copia el texto del recuadro manualmente.', 'Aviso', 'ℹ️');
+            }
+        }
+
         // Carga Inicial y Sincronización en Vivo en el Panel de Administración
-        document.addEventListener('DOMContentLoaded', function() {
-            ZenbaoStore.subscribeData(function(data) {
+        document.addEventListener('DOMContentLoaded', function () {
+            ZenbaoStore.subscribeData(function (data) {
                 populateCategorySelects();
                 const activeTab = document.querySelector('.tab-btn.active');
                 if (activeTab && activeTab.getAttribute('onclick') && activeTab.getAttribute('onclick').includes('categoriesTab')) {
@@ -939,7 +1034,7 @@ service cloud.firestore {
             const categories = ZenbaoStore.getCategories();
             const filterSelect = document.getElementById('categorySelect');
             const prodCatSelect = document.getElementById('prodCategory');
-            
+
             const currentFilterVal = filterSelect ? filterSelect.value : '';
             const currentProdCatVal = prodCatSelect ? prodCatSelect.value : '';
 
@@ -974,9 +1069,9 @@ service cloud.firestore {
         function renderProducts() {
             const filterSelect = document.getElementById('categorySelect');
             const selectedValBefore = filterSelect ? filterSelect.value : '';
-            
+
             populateCategorySelects();
-            
+
             if (filterSelect && selectedValBefore && Array.from(filterSelect.options).some(o => o.value === selectedValBefore)) {
                 filterSelect.value = selectedValBefore;
             }
@@ -1118,7 +1213,7 @@ service cloud.firestore {
 
             showCustomConfirm(
                 `¿Seguro que deseas eliminar el platillo "${prodName}"?`,
-                function() {
+                function () {
                     ZenbaoStore.deleteProduct(catId, prodId);
                     renderProducts();
                     showCustomAlert(`El platillo "${prodName}" ha sido eliminado.`, 'Platillo Eliminado', '🗑️');
@@ -1154,7 +1249,7 @@ service cloud.firestore {
             document.getElementById('imagePreview').src = '';
             document.getElementById('imagePreviewBox').style.display = 'none';
             document.getElementById('productModalTitle').textContent = 'Agregar Nuevo Platillo';
-            
+
             const currentCat = document.getElementById('categorySelect') ? document.getElementById('categorySelect').value : '';
             const prodCatSelect = document.getElementById('prodCategory');
             if (prodCatSelect && currentCat && Array.from(prodCatSelect.options).some(o => o.value === currentCat)) {
@@ -1162,7 +1257,7 @@ service cloud.firestore {
             } else if (prodCatSelect && prodCatSelect.options.length > 0) {
                 prodCatSelect.selectedIndex = 0;
             }
-            
+
             const subSectionSelect = document.getElementById('prodSubSection');
             if (subSectionSelect) subSectionSelect.removeAttribute('data-cat');
 
@@ -1223,7 +1318,7 @@ service cloud.firestore {
         }
 
         // SUBMIT FORMULARIO PRODUCTO CON CONFIRMACIÓN Y NOTIFICACIÓN CLARA
-        document.getElementById('productForm').addEventListener('submit', function(e) {
+        document.getElementById('productForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const prodName = document.getElementById('prodName').value.trim();
             const isEditing = !!document.getElementById('prodId').value;
@@ -1261,26 +1356,49 @@ service cloud.firestore {
                 hidden: isHidden
             };
 
-            ZenbaoStore.saveProduct(catId, prodData);
-            closeProductModal();
-
-            // Sincronizar el filtro visual de la lista con la categoría donde se guardó el platillo
-            const categorySelect = document.getElementById('categorySelect');
-            if (categorySelect) {
-                categorySelect.value = catId;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Guardando...';
             }
-            renderProducts();
 
-            // Nombre legible de la categoría para el cuadro de notificación
-            const categories = ZenbaoStore.getCategories();
-            const categoryObj = categories.find(c => c.id === catId);
-            const catNameStr = categoryObj ? categoryObj.name : 'el menú';
+            try {
+                const saveRes = await ZenbaoStore.saveProduct(catId, prodData);
+                closeProductModal();
 
-            showCustomAlert(
-                `El platillo "${prodName}" fue ${isEditing ? 'actualizado' : 'agregado'} con éxito en la categoría "${catNameStr}" y ya está disponible en la página pública.`,
-                '¡Platillo Guardado Con Éxito!',
-                '✅'
-            );
+                // Sincronizar el filtro visual de la lista con la categoría donde se guardó el platillo
+                const categorySelect = document.getElementById('categorySelect');
+                if (categorySelect) {
+                    categorySelect.value = catId;
+                }
+                renderProducts();
+
+                // Nombre legible de la categoría para el cuadro de notificación
+                const categories = ZenbaoStore.getCategories();
+                const categoryObj = categories.find(c => c.id === catId);
+                const catNameStr = categoryObj ? categoryObj.name : 'el menú';
+
+                if (saveRes && saveRes.error) {
+                    showCustomAlert(
+                        `⚠️ El platillo "${prodName}" se guardó en esta computadora, pero NO se pudo sincronizar en la nube:\n\n${saveRes.error}\n\nVerifica tu conexión a internet o la configuración de la nube.`,
+                        'Guardado Local (Sin Nube)',
+                        '⚠️'
+                    );
+                } else {
+                    showCustomAlert(
+                        `El platillo "${prodName}" fue ${isEditing ? 'actualizado' : 'agregado'} con éxito en la categoría "${catNameStr}" y ya está disponible en tiempo real en todos los dispositivos.`,
+                        '¡Platillo Guardado Con Éxito!',
+                        '✅'
+                    );
+                }
+            } catch (err) {
+                showCustomAlert('Error al guardar el platillo: ' + err.message, 'Error', '⚠️');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = isEditing ? 'Guardar Cambios' : 'Agregar Platillo';
+                }
+            }
         });
 
         // RENDERIZAR CATEGORÍAS
@@ -1321,7 +1439,7 @@ service cloud.firestore {
         function deleteCat(catId) {
             showCustomConfirm(
                 '¿Eliminar esta categoría y todos los platillos contenidos en ella?',
-                function() {
+                function () {
                     ZenbaoStore.deleteCategory(catId);
                     renderCategories();
                     showCustomAlert('La categoría ha sido eliminada correctamente.', 'Categoría Eliminada', '🗑️');
@@ -1375,14 +1493,14 @@ service cloud.firestore {
 
         async function handleCatImageUpload(input) {
             if (input.files && input.files[0]) {
-                const webpUrl = await ZenbaoStore.convertImageToWebP(input.files[0], 1000, 0.82);
+                const webpUrl = await ZenbaoStore.convertImageToWebP(input.files[0], 600, 0.70);
                 document.getElementById('catImage').value = webpUrl;
                 document.getElementById('catImagePreview').src = webpUrl;
                 document.getElementById('catImagePreviewBox').style.display = 'block';
             }
         }
 
-        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+        document.getElementById('categoryForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const catName = document.getElementById('catName').value.trim();
             const catData = {
@@ -1392,17 +1510,41 @@ service cloud.firestore {
                 image: document.getElementById('catImage').value.trim()
             };
 
-            ZenbaoStore.saveCategory(catData);
-            closeCategoryModal();
-            renderCategories();
-            showCustomAlert(`La categoría "${catName}" se guardó exitosamente y se actualizó en la nube.`, 'Categoría Guardada', '✅');
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Guardando...';
+            }
+
+            try {
+                const res = await ZenbaoStore.saveCategory(catData);
+                closeCategoryModal();
+                renderCategories();
+
+                if (res && res.error) {
+                    showCustomAlert(
+                        `⚠️ La categoría "${catName}" se guardó localmente, pero NO se pudo sincronizar en la nube:\n\n${res.error}\n\nVerifica tu conexión a internet o la configuración de la nube.`,
+                        'Guardado Solo Local',
+                        '⚠️'
+                    );
+                } else {
+                    showCustomAlert(`La categoría "${catName}" se guardó exitosamente y se sincronizó en la nube.`, 'Categoría Guardada', '✅');
+                }
+            } catch (err) {
+                showCustomAlert('Error al guardar categoría: ' + err.message, 'Error', '⚠️');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Guardar Categoría';
+                }
+            }
         });
 
         // RESTABLECER DATOS
         function resetDataConfirm() {
             showCustomConfirm(
                 '¿Estás seguro de restablecer la carta?\n\n(Tus precios, descripciones y nuevos platillos editados se conservarán tal cual los dejaste).',
-                function() {
+                function () {
                     ZenbaoStore.resetToDefault();
                     renderProducts();
                     showCustomAlert('El menú se ha restablecido exitosamente (conservando tus precios y ediciones actuales).', 'Menú Restablecido', '🔄');
@@ -1465,7 +1607,7 @@ service cloud.firestore {
             document.getElementById('configModal').style.display = 'none';
         }
 
-        document.getElementById('configForm').addEventListener('submit', function(e) {
+        document.getElementById('configForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const newUser = document.getElementById('newUsername').value.trim();
             const newPass = document.getElementById('newPassword').value.trim();
@@ -1531,7 +1673,7 @@ service cloud.firestore {
         function restoreSnapshotConfirm(histId, timestampStr) {
             showCustomConfirm(
                 `¿Deseas restaurar el menú a la versión del ${timestampStr}? Se reemplazará el menú actual por dicha versión.`,
-                function() {
+                function () {
                     const success = ZenbaoStore.restoreHistorySnapshot(histId);
                     if (success) {
                         renderProducts();
@@ -1552,7 +1694,7 @@ service cloud.firestore {
         function clearHistoryConfirm() {
             showCustomConfirm(
                 '¿Estás seguro de vaciar el historial de cambios? (Tu menú actual NO se borrará)',
-                function() {
+                function () {
                     ZenbaoStore.clearHistory();
                     renderHistoryList();
                     showCustomAlert('El historial de cambios ha sido vaciado.', 'Historial Limpio', '🗑️');
@@ -1565,5 +1707,5 @@ service cloud.firestore {
         }
     </script>
 </body>
-</html>
+
 </html>

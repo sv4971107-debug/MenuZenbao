@@ -1,5 +1,5 @@
 /**
- * ZENBAO - Data Store, WebP Compression & Firebase Cloud Sync
+ * ZENBAO - Data Store, WebP Compression & Supabase Cloud Sync
  */
 
 const ZENBAO_STORAGE_KEY = 'zenbao_menu_data_v1';
@@ -72,31 +72,42 @@ const DEFAULT_ZENBAO_DATA = {
     }
 };
 
-// Inicialización de Firebase (si está cargado en la página)
-let firebaseDb = null;
-let isFirebaseReady = false;
+// Inicialización de Supabase
+let supabaseClient = null;
+let isSupabaseReady = false;
 
-function initFirebaseIfAvailable() {
-    if (typeof firebase !== 'undefined' && typeof ZENBAO_FIREBASE_CONFIG !== 'undefined' && typeof USE_FIREBASE_CLOUD !== 'undefined' && USE_FIREBASE_CLOUD) {
-        if (ZENBAO_FIREBASE_CONFIG.apiKey && !ZENBAO_FIREBASE_CONFIG.apiKey.includes("YOUR_API_KEY")) {
+function initSupabaseIfAvailable() {
+    if (typeof supabase !== 'undefined' && typeof ZENBAO_SUPABASE_CONFIG !== 'undefined') {
+        let url = ZENBAO_SUPABASE_CONFIG.url || '';
+        const key = ZENBAO_SUPABASE_CONFIG.anonKey || '';
+        if (url && key && !url.includes("TU_SUPABASE_URL") && !key.includes("TU_SUPABASE_ANON_KEY")) {
             try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(ZENBAO_FIREBASE_CONFIG);
-                }
-                firebaseDb = firebase.firestore();
-                isFirebaseReady = true;
-                console.log("☁️ Firebase Nube activado para Zenbao Menu.");
+                // Limpiar URL si trae /rest/v1 o barras al final
+                url = url.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '');
+                supabaseClient = supabase.createClient(url, key);
+                isSupabaseReady = true;
+                console.log("⚡ Supabase Nube activado para Zenbao Menu.");
             } catch (e) {
-                console.warn("No se pudo conectar a Firebase, usando almacenamiento local de respaldo:", e);
+                console.warn("No se pudo conectar a Supabase:", e);
             }
         }
     }
 }
 
-initFirebaseIfAvailable();
+initSupabaseIfAvailable();
+
+function getActiveProvider() {
+    if (typeof CLOUD_PROVIDER !== 'undefined') {
+        return CLOUD_PROVIDER;
+    }
+    return isSupabaseReady ? 'supabase' : 'local';
+}
 
 const ZenbaoStore = {
-    currentStatus: { status: isFirebaseReady ? 'connecting' : 'offline', message: isFirebaseReady ? 'Conectando a la nube...' : 'Modo local (Sin Firebase)' },
+    currentStatus: { 
+        status: isSupabaseReady ? 'connecting' : 'offline', 
+        message: isSupabaseReady ? 'Conectando a Supabase...' : 'Modo local (Sin nube)' 
+    },
     statusListeners: [],
 
     addStatusListener: function(fn) {
@@ -135,7 +146,7 @@ const ZenbaoStore = {
         } catch (e) {
             console.error('Error al leer de localStorage:', e);
         }
-        // Retornar defaults sin modificar la Nube en Firebase
+        // Retornar defaults sin modificar la Nube
         const defaultData = JSON.parse(JSON.stringify(DEFAULT_ZENBAO_DATA));
         try {
             localStorage.setItem(ZENBAO_STORAGE_KEY, JSON.stringify(defaultData));
@@ -152,65 +163,95 @@ const ZenbaoStore = {
         const initialLocalData = this.getData();
         callback(initialLocalData);
 
-        // Si Firebase está listo, suscribirse a cambios en vivo
-        if (isFirebaseReady && firebaseDb) {
-            this.notifyStatus('connecting', 'Conectando con la nube de Firebase...');
-            firebaseDb.collection('zenbao_menu').doc('main_data').onSnapshot(doc => {
-                if (doc.exists) {
-                    const cloudData = doc.data();
-                    // Guardar localmente SIN volver a subir a la nube
-                    this.saveData(cloudData, false);
-                    callback(cloudData);
-                    this.notifyStatus('connected', 'Sincronizado en tiempo real con la nube');
-                } else {
-                    // Si el documento en la nube aún no existe en Firebase, crearlo con los datos por defecto
-                    this.saveData(initialLocalData, true);
-                }
-            }, err => {
-                console.warn("Error en la suscripción en vivo a la nube:", err);
-                let msg = err.message || 'Error de conexión a Firebase.';
-                if (err.code === 'permission-denied') {
-                    msg = 'Las reglas de seguridad de Firestore en Firebase expiraron o deniegan acceso.';
-                }
-                this.notifyStatus('error', msg, err);
-            });
+        const provider = getActiveProvider();
+
+        // 1. MODO SUPABASE
+        if (provider === 'supabase' && isSupabaseReady && supabaseClient) {
+            this.notifyStatus('connecting', 'Conectando con Supabase Nube...');
+            
+            // Cargar datos actuales desde Supabase
+            supabaseClient.from('zenbao_menu').select('data').eq('id', 'main_data').maybeSingle()
+                .then(({ data: row, error }) => {
+                    if (error) {
+                        console.warn("Aviso al consultar Supabase:", error);
+                        this.notifyStatus('error', 'Error en Supabase: ' + error.message, error);
+                    } else if (row && row.data) {
+                        const cloudData = row.data;
+                        const localData = this.getData();
+                        const localTime = localData._lastUpdated || 0;
+                        const cloudTime = cloudData._lastUpdated || 0;
+
+                        if (localTime > cloudTime && (localTime - cloudTime > 2500)) {
+                            console.warn("Datos locales más recientes que Supabase. Resincronizando...");
+                            this.saveData(localData, true);
+                            return;
+                        }
+
+                        this.saveData(cloudData, false);
+                        callback(cloudData);
+                        this.notifyStatus('connected', 'Sincronizado en tiempo real con Supabase');
+                    } else {
+                        // Si la tabla está vacía, subir los datos por defecto
+                        this.saveData(initialLocalData, true);
+                    }
+                })
+                .catch(err => {
+                    this.notifyStatus('error', 'Error al conectar con Supabase: ' + err.message, err);
+                });
+
+            // Suscribirse a cambios en vivo con Realtime
+            try {
+                supabaseClient.channel('zenbao_realtime_changes')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'zenbao_menu' }, payload => {
+                        if (payload && payload.new && payload.new.data) {
+                            const cloudData = payload.new.data;
+                            this.saveData(cloudData, false);
+                            callback(cloudData);
+                            this.notifyStatus('connected', 'Sincronizado en tiempo real con Supabase');
+                        }
+                    })
+                    .subscribe();
+            } catch(e) {
+                console.warn("No se pudo iniciar canal Realtime de Supabase:", e);
+            }
         } else {
-            this.notifyStatus('offline', 'Modo local (Sin Firebase)');
+            this.notifyStatus('offline', 'Modo local (Sin nube conectada)');
         }
     },
 
-    // Guardar todos los datos (Local + opcionalmente Nube Firebase)
-    saveData: function(data, saveToCloud = true) {
+    // Guardar todos los datos (Local + opcionalmente Nube Supabase)
+    saveData: async function(data, saveToCloud = true) {
+        if (!data._lastUpdated || saveToCloud) {
+            data._lastUpdated = Date.now();
+        }
         try {
             localStorage.setItem(ZENBAO_STORAGE_KEY, JSON.stringify(data));
         } catch (e) {
             console.error('Error al guardar en localStorage:', e);
         }
 
-        // Si Firebase está activo y se solicita guardar en nube, enviar a Firestore
-        if (saveToCloud && isFirebaseReady && firebaseDb) {
-            const dataString = JSON.stringify(data);
-            const sizeInBytes = new Blob([dataString]).size;
-            if (sizeInBytes > 950000) {
-                console.warn("⚠️ Los datos superan los 950KB. Se recomienda reducir el tamaño de las fotos.");
-            }
+        const provider = getActiveProvider();
 
-            firebaseDb.collection('zenbao_menu').doc('main_data').set(data)
-                .then(() => {
-                    console.log("☁️ Guardado en la nube con éxito.");
-                    this.notifyStatus('connected', 'Cambios guardados y sincronizados en tiempo real');
-                })
-                .catch(err => {
-                    console.error("Error al guardar en la nube:", err);
-                    let msg = err.message || 'Error al guardar en la nube';
-                    if (err.code === 'permission-denied') {
-                        msg = 'Error de permisos: Las reglas de Firestore en Firebase expiran por defecto a los 30 días.';
-                    } else if (msg.includes('exceeds maximum size')) {
-                        msg = 'Error de tamaño: Los platillos con foto superan el límite de 1MB por documento de Firestore.';
-                    }
-                    this.notifyStatus('error', msg, err);
+        // GUARDAR EN SUPABASE
+        if (saveToCloud && provider === 'supabase' && isSupabaseReady && supabaseClient) {
+            try {
+                const { error } = await supabaseClient.from('zenbao_menu').upsert({
+                    id: 'main_data',
+                    data: data,
+                    updated_at: new Date().toISOString()
                 });
+                if (error) throw error;
+                console.log("⚡ Guardado en Supabase Nube con éxito.");
+                this.notifyStatus('connected', 'Cambios guardados y sincronizados en tiempo real en Supabase');
+                return { success: true };
+            } catch (err) {
+                console.error("Error al guardar en Supabase:", err);
+                const msg = err.message || 'Error al guardar en Supabase';
+                this.notifyStatus('error', msg, err);
+                return { success: false, error: msg };
+            }
         }
+        return { success: true, localOnly: !isSupabaseReady };
     },
 
     // HISTORIAL DE EDICIONES CON FECHA Y HORA
@@ -308,13 +349,43 @@ const ZenbaoStore = {
         return defaultCopy;
     },
 
+    // Descargar copia de seguridad en archivo .json
+    exportBackup: function() {
+        const data = this.getData();
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `zenbao_menu_backup_${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    },
+
+    // Importar y restaurar copia de seguridad desde archivo .json
+    importBackup: async function(jsonObj) {
+        if (!jsonObj || typeof jsonObj !== 'object') {
+            throw new Error('El archivo no contiene un formato de menú válido.');
+        }
+        if (!jsonObj.categories || !jsonObj.products) {
+            throw new Error('El archivo no tiene la estructura de menú esperada (faltan categorías o productos).');
+        }
+        const res = await this.saveData(jsonObj, true);
+        this.pushHistoryRecord('Se importó una copia de seguridad externa', jsonObj);
+        return res;
+    },
+
     // Categorías
     getCategories: function() {
         const data = this.getData();
         return data.categories || [];
     },
 
-    saveCategory: function(catData) {
+    saveCategory: async function(catData) {
         const data = this.getData();
         let isNew = false;
         if (!catData.id) {
@@ -333,19 +404,20 @@ const ZenbaoStore = {
                 data.categories.push(catData);
             }
         }
-        this.saveData(data);
+        const res = await this.saveData(data);
         this.pushHistoryRecord(isNew ? `Se creó la categoría: ${catData.name}` : `Se editó la categoría: ${catData.name}`);
-        return catData;
+        return { category: catData, ...res };
     },
 
-    deleteCategory: function(catId) {
+    deleteCategory: async function(catId) {
         const data = this.getData();
         const cat = data.categories.find(c => c.id === catId);
         const catName = cat ? cat.name : catId;
         data.categories = data.categories.filter(c => c.id !== catId);
         delete data.products[catId];
-        this.saveData(data);
+        const res = await this.saveData(data);
         this.pushHistoryRecord(`Se eliminó la categoría: ${catName}`);
+        return res;
     },
 
     moveCategory: function(index, direction) {
@@ -390,7 +462,7 @@ const ZenbaoStore = {
         return data.products[catId] || [];
     },
 
-    saveProduct: function(catId, prodData) {
+    saveProduct: async function(catId, prodData) {
         const data = this.getData();
         let isNew = false;
         if (!data.products[catId]) {
@@ -414,20 +486,21 @@ const ZenbaoStore = {
             }
         }
 
-        this.saveData(data);
+        const res = await this.saveData(data);
         this.pushHistoryRecord(isNew ? `Se agregó el platillo: ${prodData.name}` : `Se editó el platillo: ${prodData.name}`);
-        return prodData;
+        return { product: prodData, ...res };
     },
 
-    deleteProduct: function(catId, prodId) {
+    deleteProduct: async function(catId, prodId) {
         const data = this.getData();
         if (data.products[catId]) {
             const prod = data.products[catId].find(p => p.id === prodId);
             const prodName = prod ? prod.name : prodId;
             data.products[catId] = data.products[catId].filter(p => p.id !== prodId);
 
-            this.saveData(data);
+            const res = await this.saveData(data);
             this.pushHistoryRecord(`Se eliminó el platillo: ${prodName}`);
+            return res;
         }
     },
 
@@ -465,7 +538,7 @@ const ZenbaoStore = {
      * CONVERSOR DE IMAGEN A WEBP EN EL NAVEGADOR
      * Recibe un archivo File (PNG, JPG, HEIC, etc.), lo redimensiona y devuelve un DataURL .webp comprimido
      */
-    convertImageToWebP: function(file, maxWidth = 550, quality = 0.70) {
+    convertImageToWebP: function(file, maxWidth = 500, quality = 0.65) {
         return new Promise((resolve, reject) => {
             if (!file) return resolve('');
             const reader = new FileReader();
@@ -530,6 +603,8 @@ function initScrollHideHeader() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    initScrollHideHeader();
-});
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+        initScrollHideHeader();
+    });
+}
